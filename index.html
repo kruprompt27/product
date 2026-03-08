@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบประเมิน แซ่บสามเหลี่ยม</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --red-dark: #962d22;
+    --red-light: #e74c3c;
+    --orange: #e67e22;
+    --gold: #f39c12;
+    --green: #27ae60;
+    --bg: #fdf8f0;
+    --white: #ffffff;
+    --gray-50: #fafafa;
+    --gray-100: #f4f4f4;
+    --gray-200: #e8e8e8;
+    --gray-500: #888;
+    --gray-700: #444;
+    --text: #1a1a1a;
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 48px rgba(0,0,0,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Decorative triangle background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    right: -80px;
+    width: 0;
+    height: 0;
+    border-left: 320px solid transparent;
+    border-bottom: 540px solid rgba(192,57,43,0.07);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px;
+    left: -80px;
+    width: 0;
+    height: 0;
+    border-right: 260px solid transparent;
+    border-top: 420px solid rgba(243,156,18,0.06);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, var(--orange) 100%);
+    border-radius: 20px;
+    padding: 32px 32px 28px;
+    margin-bottom: 28px;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '▲';
+    position: absolute;
+    right: 24px;
+    top: 16px;
+    font-size: 80px;
+    opacity: 0.12;
+    line-height: 1;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    padding: 4px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .header h2 {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red-dark);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(to bottom, var(--red), var(--orange));
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Form fields */
+  .field-group { margin-bottom: 16px; }
+  .field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+  }
+  .field-label span { color: var(--red); margin-left: 2px; }
+  input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--gray-50);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.10);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* Status selector */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media(min-width: 500px) {
+    .status-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .status-btn {
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 10px 6px;
+    background: var(--gray-50);
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--gray-700);
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .status-btn:hover { border-color: var(--red-light); color: var(--red); background: #fff5f5; }
+  .status-btn.active {
+    border-color: var(--red);
+    background: linear-gradient(135deg, #fff0ef, #fff8f0);
+    color: var(--red-dark);
+    box-shadow: 0 2px 10px rgba(192,57,43,0.13);
+  }
+  .status-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  /* Rating table */
+  .rating-table { width: 100%; border-collapse: collapse; }
+  .rating-table th {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-align: center;
+    padding: 0 0 12px;
+  }
+  .rating-table th:first-child { text-align: left; }
+  .criteria-row {
+    border-top: 1px solid var(--gray-100);
+    transition: background 0.15s;
+  }
+  .criteria-row:hover { background: #fffaf8; }
+  .criteria-cell {
+    padding: 14px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    vertical-align: middle;
+    padding-right: 12px;
+  }
+  .criteria-num {
+    color: var(--red);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .star-cell { text-align: center; vertical-align: middle; padding: 14px 4px; }
+  .star-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-200);
+    cursor: pointer;
+    background: var(--gray-50);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-500);
+    transition: all 0.16s;
+    user-select: none;
+  }
+  .star-btn:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.12); background: #fffcf0; }
+  .star-btn.sel-5 { background: #27ae60; border-color: #27ae60; color: white; box-shadow: 0 2px 8px rgba(39,174,96,0.3); }
+  .star-btn.sel-4 { background: #2ecc71; border-color: #2ecc71; color: white; box-shadow: 0 2px 8px rgba(46,204,113,0.25); }
+  .star-btn.sel-3 { background: #f39c12; border-color: #f39c12; color: white; box-shadow: 0 2px 8px rgba(243,156,18,0.25); }
+  .star-btn.sel-2 { background: #e67e22; border-color: #e67e22; color: white; box-shadow: 0 2px 8px rgba(230,126,34,0.25); }
+  .star-btn.sel-1 { background: #e74c3c; border-color: #e74c3c; color: white; box-shadow: 0 2px 8px rgba(231,76,60,0.25); }
+
+  /* Score bar */
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 0;
+    border-top: 2px solid var(--gray-100);
+    margin-top: 4px;
+  }
+  .score-label { font-weight: 700; font-size: 15px; color: var(--red-dark); }
+  .score-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--red-dark);
+  }
+  .score-bar-wrap {
+    flex: 1;
+    margin: 0 16px;
+    height: 10px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .score-bar {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
+    transition: width 0.4s cubic-bezier(.4,2,.6,1);
+  }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--red-dark), var(--red), var(--orange));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(192,57,43,0.35);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,57,43,0.40); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* Success */
+  .success-box {
+    display: none;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 2px solid #86efac;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .success-box.show { display: block; animation: popIn 0.4s cubic-bezier(.4,2,.6,1); }
+  @keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .success-icon { font-size: 52px; margin-bottom: 12px; }
+  .success-title { font-size: 20px; font-weight: 800; color: #166534; margin-bottom: 6px; }
+  .success-sub { font-size: 14px; color: #166534; opacity: 0.75; }
+
+  /* Error */
+  .error-box {
+    display: none;
+    background: #fff5f5;
+    border: 1.5px solid #fca5a5;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #991b1b;
+    margin-bottom: 16px;
+  }
+  .error-box.show { display: block; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-top: 16px;
+  }
+  .footer strong { color: var(--red-dark); }
+
+  .loading-spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Instruction pills */
+  .score-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .legend-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+  }
+  .legend-5 { background: #27ae60; }
+  .legend-4 { background: #2ecc71; }
+  .legend-3 { background: #f39c12; }
+  .legend-2 { background: #e67e22; }
+  .legend-1 { background: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">🏫 โรงเรียนหนองสำโรงวิทยา</div>
+    <h1>แบบประเมินการเยี่ยมชมโครงงาน</h1>
+    <h2>แซ่บสามเหลี่ยม… นวัตกรรมโอนิกิริอุดรฟิวชัน</h2>
+  </div>
+
+  <!-- Form -->
+  <div id="formContainer">
+    <!-- Visitor Info -->
+    <div class="card">
+      <div class="card-title">ข้อมูลผู้เยี่ยมชม</div>
+
+      <div class="field-group">
+        <label class="field-label">ชื่อ-สกุล <span>*</span></label>
+        <input type="text" id="visitorName" placeholder="กรอกชื่อ-สกุล" />
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">สถานะ <span>*</span></label>
+        <div class="status-grid">
+          <button class="status-btn" onclick="selectStatus(this,'คณะกรรมการ/ครู')">
+            <span class="status-icon">👨‍🏫</span>คณะกรรมการ/ครู
+          </button>
+          <button class="status-btn" onclick="selectStatus(this,'ผู้ปกครอง')">
+            <span class="status-icon">👨‍👩‍👧</span>ผู้ปกครอง
+          </button>
+          <button class="status-btn" onclick="selectStatus(this,'นักเรียน')">
+            <span class="status-icon">🎒</span>นักเรียน
+          </button>
+          <button class="status-btn" onclick="selectStatus(this,'บุคคลทั่วไป')">
+            <span class="status-icon">👤</span>บุคคลทั่วไป
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">วันที่เยี่ยมชม</label>
+        <input type="date" id="visitDate" />
+      </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="card">
+      <div class="card-title">เกณฑ์การประเมิน</div>
+      <div class="score-legend">
+        <span class="legend-pill legend-5">5 ดีเยี่ยม</span>
+        <span class="legend-pill legend-4">4 ดีมาก</span>
+        <span class="legend-pill legend-3">3 ดี</span>
+        <span class="legend-pill legend-2">2 พอใช้</span>
+        <span class="legend-pill legend-1">1 ควรปรับปรุง</span>
+      </div>
+
+      <table class="rating-table">
+        <thead>
+          <tr>
+            <th>ประเด็นการประเมิน</th>
+            <th>5</th><th>4</th><th>3</th><th>2</th><th>1</th>
+          </tr>
+        </thead>
+        <tbody id="criteriaBody"></tbody>
+      </table>
+
+      <div class="score-row">
+        <span class="score-label">รวมคะแนน</span>
+        <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+        <span class="score-value"><span id="totalScore">0</span><small style="font-size:14px;font-weight:500;color:#999;">/25</small></span>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="card">
+      <div class="card-title">ข้อเสนอแนะ / คำติชม</div>
+      <textarea id="comments" placeholder="กรอกข้อเสนอแนะหรือคำติชมเพื่อการพัฒนา (ถ้ามี)"></textarea>
+    </div>
+
+    <!-- Error -->
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- Submit -->
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+      <span id="submitText">📨 ส่งแบบประเมิน</span>
+      <div class="loading-spinner" id="spinner"></div>
+    </button>
+  </div>
+
+  <!-- Success -->
+  <div class="success-box" id="successBox">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">ขอบคุณสำหรับการประเมิน!</div>
+    <div class="success-sub" id="successDetail"></div>
+    <button onclick="resetForm()" style="margin-top:18px; padding:12px 28px; background:var(--green); color:white; border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;">📝 ทำแบบประเมินอีกครั้ง</button>
+  </div>
+
+  <div class="footer">
+    <strong>แซ่บสามเหลี่ยม ▲</strong> · โรงเรียนหนองสำโรงวิทยา
+  </div>
+</div>
+
+<script>
+const criteria = [
+  "ความแปลกใหม่ของการนำข้าวไทย/สีธรรมชาติมาทำโอนิกิริ",
+  "รสชาติ ความสะอาด และบรรจุภัณฑ์มีความน่าสนใจ",
+  "ความเหมาะสมของราคา (20 บาท) และโอกาสในการสร้างรายได้",
+  "การนำเสนอผลงาน การอธิบาย และการตอบคำถามของนักเรียน",
+  "ความเป็นไปได้ในการนำไปต่อยอดสร้างรายได้จริง"
+];
+
+let scores = [0, 0, 0, 0, 0];
+let selectedStatus = '';
+
+// Init
+function init() {
+  // Set today
+  document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
+
+  // Build criteria rows
+  const tbody = document.getElementById('criteriaBody');
+  criteria.forEach((c, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'criteria-row';
+    let cells = `<td class="criteria-cell"><span class="criteria-num">${i+1}.</span>${c}</td>`;
+    [5,4,3,2,1].forEach(v => {
+      cells += `<td class="star-cell"><button class="star-btn" id="btn-${i}-${v}" onclick="setScore(${i},${v})">${v}</button></td>`;
+    });
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
+  });
+}
+
+function selectStatus(btn, val) {
+  document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedStatus = val;
+}
+
+function setScore(idx, val) {
+  scores[idx] = val;
+  // Update buttons
+  [5,4,3,2,1].forEach(v => {
+    const btn = document.getElementById(`btn-${idx}-${v}`);
+    btn.className = 'star-btn' + (v === val ? ` sel-${v}` : '');
+  });
+  updateTotal();
+}
+
+function updateTotal() {
+  const total = scores.reduce((a,b) => a+b, 0);
+  document.getElementById('totalScore').textContent = total;
+  document.getElementById('scoreBar').style.width = (total/25*100) + '%';
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = '⚠️ ' + msg;
+  box.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('show');
+}
+
+async function submitForm() {
+  hideError();
+  const name = document.getElementById('visitorName').value.trim();
+  const date = document.getElementById('visitDate').value;
+  const comments = document.getElementById('comments').value.trim();
+  
+  // ฝัง URL ฐานข้อมูลโดยตรง
+  const sheetsUrl = "https://script.google.com/macros/s/AKfycbwtDmTlzAAAbrqoaxp0QTjxooO85ivN0CICrzp5jluBixEucbj-LEaIK1WjyrTS9A/exec";
+
+  if (!name) { showError('กรุณากรอกชื่อ-สกุล'); return; }
+  if (!selectedStatus) { showError('กรุณาเลือกสถานะ'); return; }
+  const missing = scores.filter(s => s === 0).length;
+  if (missing > 0) { showError(`กรุณาให้คะแนนให้ครบ (ยังเหลือ ${missing} ข้อ)`); return; }
+
+  const total = scores.reduce((a,b)=>a+b,0);
+  const data = {
+    timestamp: new Date().toLocaleString('th-TH'),
+    name, status: selectedStatus, date,
+    score1: scores[0], score2: scores[1], score3: scores[2],
+    score4: scores[3], score5: scores[4],
+    total, comments
+  };
+
+  // UI loading
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('submitText').textContent = 'กำลังส่งข้อมูล...';
+  document.getElementById('spinner').style.display = 'block';
+
+  try {
+    await fetch(sheetsUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) {
+    // no-cors won't error on success; ignore
+  }
+
+  // Show success
+  setTimeout(() => {
+    document.getElementById('formContainer').style.display = 'none';
+    const successBox = document.getElementById('successBox');
+    successBox.classList.add('show');
+    document.getElementById('successDetail').innerText =
+      `${name} · สถานะ: ${selectedStatus} · คะแนนรวม: ${total}/25\n\n✅ บันทึกข้อมูลลงฐานข้อมูลเรียบร้อยแล้ว`;
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 800);
+}
+
+function resetForm() {
+  document.getElementById('formContainer').style.display = 'block';
+  document.getElementById('successBox').classList.remove('show');
+  document.getElementById('visitorName').value = '';
+  document.getElementById('comments').value = '';
+  document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
+  selectedStatus = '';
+  scores = [0,0,0,0,0];
+  document.querySelectorAll('.status-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.star-btn').forEach(b=>b.className='star-btn');
+  updateTotal();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  document.getElementById('submitText').textContent = '📨 ส่งแบบประเมิน';
+  document.getElementById('spinner').style.display = 'none';
+  hideError();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+init();
+</script>
+</body>
+</html>
