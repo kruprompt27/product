@@ -2,669 +2,1105 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แบบประเมิน แซ่บสามเหลี่ยม</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>📦 จัดการสินค้า — ครูพร้อมสอน</title>
+
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#f97316">
+<meta name="description" content="จัดการสินค้า/ราคา ระบบขายแผนการสอนครูพร้อมสอน">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="จัดการสินค้า">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --red: #c0392b;
-    --red-dark: #962d22;
-    --red-light: #e74c3c;
-    --orange: #e67e22;
-    --gold: #f39c12;
-    --green: #27ae60;
-    --bg: #fdf8f0;
-    --white: #ffffff;
-    --gray-50: #fafafa;
-    --gray-100: #f4f4f4;
-    --gray-200: #e8e8e8;
-    --gray-500: #888;
-    --gray-700: #444;
-    --text: #1a1a1a;
-    --shadow: 0 4px 24px rgba(0,0,0,0.10);
-    --shadow-lg: 0 8px 48px rgba(0,0,0,0.15);
-  }
+:root {
+  --color-primary: #f97316;
+  --color-primary-dark: #c2410c;
+  --color-accent: #fdba74;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  --bg-app: #fff7ed;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #fed7aa;
+  --bg-elevated: #ffedd5;
 
-  body {
-    font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-  }
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
 
-  /* Decorative triangle background */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -120px;
-    right: -80px;
-    width: 0;
-    height: 0;
-    border-left: 320px solid transparent;
-    border-bottom: 540px solid rgba(192,57,43,0.07);
-    pointer-events: none;
-    z-index: 0;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -100px;
-    left: -80px;
-    width: 0;
-    height: 0;
-    border-right: 260px solid transparent;
-    border-top: 420px solid rgba(243,156,18,0.06);
-    pointer-events: none;
-    z-index: 0;
-  }
+  --border-default: #fed7aa;
+  --border-light: #ffedd5;
 
-  .wrapper {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-    position: relative;
-    z-index: 1;
-  }
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(249,115,22,0.18);
+  --shadow-lg: 0 8px 24px rgba(249,115,22,0.28);
 
-  /* Header */
-  .header {
-    background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, var(--orange) 100%);
-    border-radius: 20px;
-    padding: 32px 32px 28px;
-    margin-bottom: 28px;
-    color: white;
-    box-shadow: var(--shadow-lg);
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '▲';
-    position: absolute;
-    right: 24px;
-    top: 16px;
-    font-size: 80px;
-    opacity: 0.12;
-    line-height: 1;
-  }
-  .header-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 50px;
-    padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 12px;
-    letter-spacing: 0.03em;
-  }
-  .header h1 {
-    font-size: 22px;
-    font-weight: 800;
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-  .header h2 {
-    font-size: 15px;
-    font-weight: 400;
-    opacity: 0.85;
-  }
+  --gradient-header: linear-gradient(135deg, #f97316, #fb923c, #fbbf24);
+}
 
-  /* Card */
-  .card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-200);
-  }
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--red-dark);
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 18px;
-    background: linear-gradient(to bottom, var(--red), var(--orange));
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
+[data-theme="dark"] {
+  --bg-app: #1c1917;
+  --bg-card: #292524;
+  --bg-input: #44403c;
+  --bg-elevated: #44403c;
+  --text-primary: #f5f5f4;
+  --text-secondary: #d6d3d1;
+  --text-muted: #a8a29e;
+  --text-faint: #78716c;
+  --border-default: #57534e;
+  --border-light: #292524;
+}
 
-  /* Form fields */
-  .field-group { margin-bottom: 16px; }
-  .field-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: 8px;
-  }
-  .field-label span { color: var(--red); margin-left: 2px; }
-  input[type="text"], input[type="date"], textarea {
-    width: 100%;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 10px;
-    padding: 11px 14px;
-    font-family: inherit;
-    font-size: 15px;
-    color: var(--text);
-    background: var(--gray-50);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(192,57,43,0.10);
-    background: white;
-  }
-  textarea { resize: vertical; min-height: 90px; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
 
-  /* Status selector */
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-  @media(min-width: 500px) {
-    .status-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-  .status-btn {
-    border: 2px solid var(--gray-200);
-    border-radius: 10px;
-    padding: 10px 6px;
-    background: var(--gray-50);
-    cursor: pointer;
-    text-align: center;
-    font-family: inherit;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--gray-700);
-    transition: all 0.18s;
-    user-select: none;
-  }
-  .status-btn:hover { border-color: var(--red-light); color: var(--red); background: #fff5f5; }
-  .status-btn.active {
-    border-color: var(--red);
-    background: linear-gradient(135deg, #fff0ef, #fff8f0);
-    color: var(--red-dark);
-    box-shadow: 0 2px 10px rgba(192,57,43,0.13);
-  }
-  .status-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+/* Login Screen */
+.login-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #fff7ed, #fed7aa, #fdba74);
+}
+.login-card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 24px;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(249,115,22,0.25);
+}
+.login-icon {
+  width: 80px; height: 80px;
+  margin: 0 auto 16px;
+  background: var(--gradient-header);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  box-shadow: var(--shadow-md);
+}
+.login-title { text-align: center; font-size: 22px; font-weight: 700; color: var(--color-primary-dark); margin-bottom: 4px; }
+.login-subtitle { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+.login-error {
+  display: none;
+  background: #fee2e2; color: #b91c1c;
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; margin-bottom: 16px;
+}
+.login-error.show { display: block; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #fed7aa;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+.form-input:focus { outline: none; border-color: var(--color-primary); }
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border: none; border-radius: 12px;
+  background: var(--gradient-header);
+  color: white;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-top: 8px;
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* Rating table */
-  .rating-table { width: 100%; border-collapse: collapse; }
-  .rating-table th {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--gray-500);
-    text-align: center;
-    padding: 0 0 12px;
-  }
-  .rating-table th:first-child { text-align: left; }
-  .criteria-row {
-    border-top: 1px solid var(--gray-100);
-    transition: background 0.15s;
-  }
-  .criteria-row:hover { background: #fffaf8; }
-  .criteria-cell {
-    padding: 14px 0;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text);
-    vertical-align: middle;
-    padding-right: 12px;
-  }
-  .criteria-num {
-    color: var(--red);
-    font-weight: 700;
-    margin-right: 4px;
-  }
-  .star-cell { text-align: center; vertical-align: middle; padding: 14px 4px; }
-  .star-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 2px solid var(--gray-200);
-    cursor: pointer;
-    background: var(--gray-50);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--gray-500);
-    transition: all 0.16s;
-    user-select: none;
-  }
-  .star-btn:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.12); background: #fffcf0; }
-  .star-btn.sel-5 { background: #27ae60; border-color: #27ae60; color: white; box-shadow: 0 2px 8px rgba(39,174,96,0.3); }
-  .star-btn.sel-4 { background: #2ecc71; border-color: #2ecc71; color: white; box-shadow: 0 2px 8px rgba(46,204,113,0.25); }
-  .star-btn.sel-3 { background: #f39c12; border-color: #f39c12; color: white; box-shadow: 0 2px 8px rgba(243,156,18,0.25); }
-  .star-btn.sel-2 { background: #e67e22; border-color: #e67e22; color: white; box-shadow: 0 2px 8px rgba(230,126,34,0.25); }
-  .star-btn.sel-1 { background: #e74c3c; border-color: #e74c3c; color: white; box-shadow: 0 2px 8px rgba(231,76,60,0.25); }
+/* App Screen */
+.app-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--gradient-header);
+  color: white;
+  padding: 14px 16px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.app-header h1 { font-size: 17px; font-weight: 700; flex: 1; }
+.app-header .icon { font-size: 22px; margin-right: 4px; }
+.user-tag {
+  background: rgba(255,255,255,0.25);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.btn-icon {
+  background: rgba(255,255,255,0.2); border: none;
+  width: 34px; height: 34px; border-radius: 50%;
+  color: white; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
 
-  /* Score bar */
-  .score-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0 0;
-    border-top: 2px solid var(--gray-100);
-    margin-top: 4px;
-  }
-  .score-label { font-weight: 700; font-size: 15px; color: var(--red-dark); }
-  .score-value {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--red-dark);
-  }
-  .score-bar-wrap {
-    flex: 1;
-    margin: 0 16px;
-    height: 10px;
-    background: var(--gray-100);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .score-bar {
-    height: 100%;
-    border-radius: 8px;
-    background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
-    transition: width 0.4s cubic-bezier(.4,2,.6,1);
-  }
+.main { padding: 12px; padding-bottom: 80px; }
 
-  /* Submit button */
-  .submit-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--red-dark), var(--red), var(--orange));
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(192,57,43,0.35);
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,57,43,0.40); }
-  .submit-btn:active { transform: translateY(0); }
-  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+/* Tabs */
+.tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  padding: 8px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-default);
+  position: sticky; top: 60px; z-index: 5;
+}
+.tab-btn {
+  padding: 10px 4px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.tab-btn.active {
+  background: var(--gradient-header);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
 
-  /* Success */
-  .success-box {
-    display: none;
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    border: 2px solid #86efac;
-    border-radius: 16px;
-    padding: 28px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .success-box.show { display: block; animation: popIn 0.4s cubic-bezier(.4,2,.6,1); }
-  @keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .success-icon { font-size: 52px; margin-bottom: 12px; }
-  .success-title { font-size: 20px; font-weight: 800; color: #166534; margin-bottom: 6px; }
-  .success-sub { font-size: 14px; color: #166534; opacity: 0.75; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  /* Error */
-  .error-box {
-    display: none;
-    background: #fff5f5;
-    border: 1.5px solid #fca5a5;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 14px;
-    color: #991b1b;
-    margin-bottom: 16px;
-  }
-  .error-box.show { display: block; }
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-default);
+}
+.card-title {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.card-desc {
+  font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
+}
 
-  /* Link Banner */
-  .link-banner {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 24px 20px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-200);
-    text-align: center;
-  }
-  .link-title {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: 14px;
-  }
-  .drive-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #fff5f5;
-    color: var(--red-dark);
-    text-decoration: none;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 14px;
-    border: 1.5px solid #fca5a5;
-    transition: all 0.2s;
-  }
-  .drive-link:hover {
-    background: var(--red);
-    color: var(--white);
-    border-color: var(--red);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(192,57,43,0.2);
-  }
+/* Price row */
+.price-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.price-row:last-child { border-bottom: none; }
+.price-row .label {
+  flex: 1; font-size: 14px; color: var(--text-primary); font-weight: 500;
+}
+.price-row .sub-label {
+  font-size: 11px; color: var(--text-muted);
+}
+.price-input {
+  width: 110px;
+  padding: 8px 12px;
+  border: 2px solid var(--border-default);
+  border-radius: 8px;
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  text-align: right;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+.price-input:focus { outline: none; border-color: var(--color-primary); }
+.price-input.changed {
+  border-color: var(--color-warning);
+  background: #fffbeb;
+}
 
-  /* Footer */
-  .footer {
-    text-align: center;
-    font-size: 13px;
-    color: var(--gray-500);
-    margin-top: 16px;
-  }
-  .footer strong { color: var(--red-dark); }
+/* System item */
+.sys-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+}
+.sys-icon {
+  font-size: 24px; width: 40px; text-align: center;
+}
+.sys-info { flex: 1; min-width: 0; }
+.sys-info .name {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sys-info .desc { font-size: 11px; color: var(--text-muted); }
+.sys-price {
+  width: 90px;
+  padding: 6px 10px;
+  border: 2px solid var(--border-default);
+  border-radius: 8px;
+  text-align: right;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+.sys-toggle {
+  width: 40px; height: 22px;
+  background: var(--border-default);
+  border-radius: 11px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+}
+.sys-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.sys-toggle.on { background: var(--color-success); }
+.sys-toggle.on::after { transform: translateX(18px); }
 
-  .loading-spinner {
-    width: 18px; height: 18px;
-    border: 2.5px solid rgba(255,255,255,0.4);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* Subjects */
+.subj-filter {
+  display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.subj-filter-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  background: var(--bg-card);
+  font-family: inherit; font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.subj-filter-btn.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
 
-  /* Instruction pills */
-  .score-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .legend-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 600;
-    color: white;
-  }
-  .legend-5 { background: #27ae60; }
-  .legend-4 { background: #2ecc71; }
-  .legend-3 { background: #f39c12; }
-  .legend-2 { background: #e67e22; }
-  .legend-1 { background: #e74c3c; }
+.subj-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.subj-row .subj-name {
+  flex: 1; min-width: 0;
+  font-size: 13px; color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.subj-row .subj-hours {
+  background: var(--bg-elevated);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.subj-row .subj-actions { display: flex; gap: 4px; }
+.subj-row button {
+  border: none;
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  cursor: pointer; font-size: 13px;
+}
+.subj-row .btn-edit:hover { background: var(--color-info); color: white; }
+.subj-row .btn-del:hover { background: var(--color-danger); color: white; }
+
+/* Save bar */
+.save-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-default);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 20;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+  display: none;
+}
+.save-bar.show { display: flex; gap: 10px; }
+.save-bar .btn-cancel {
+  background: var(--bg-elevated); color: var(--text-primary);
+  border: none; border-radius: 10px;
+  padding: 12px 18px;
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+}
+.save-bar .btn-save {
+  flex: 1;
+  background: var(--color-success);
+  color: white;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: none;
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-content {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px 16px 0 0;
+  padding: 20px 16px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal-actions button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-cancel-modal { background: var(--bg-elevated); color: var(--text-primary); }
+.btn-ok-modal { background: var(--color-primary); color: white; }
+.btn-del-modal { background: var(--color-danger); color: white; }
+
+/* Toast */
+.toast {
+  position: fixed; top: 80px; left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--text-primary); color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 13px;
+  z-index: 200;
+  opacity: 0;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast.success { background: var(--color-success); }
+.toast.error { background: var(--color-danger); }
+
+.empty {
+  text-align: center; padding: 32px 16px;
+  color: var(--text-muted); font-size: 13px;
+}
+
+.fab {
+  position: fixed; right: 16px; bottom: 76px;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--gradient-header);
+  color: white;
+  border: none;
+  font-size: 24px;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  z-index: 15;
+}
+.fab.hidden-fab { display: none; }
+
+.hidden { display: none !important; }
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid #fed7aa; border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Install banner */
+.install-banner {
+  display: none;
+  position: fixed; top: 60px; left: 12px; right: 12px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  border: 1px solid var(--border-default);
+}
+.install-banner.show { display: flex; align-items: center; gap: 10px; }
+.install-banner .install-text { flex: 1; font-size: 13px; }
+.install-banner .install-text b { color: var(--color-primary); }
+.install-banner button {
+  border: none; border-radius: 8px;
+  padding: 6px 12px;
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer;
+}
+.install-banner .btn-install { background: var(--color-primary); color: white; }
+.install-banner .btn-dismiss { background: transparent; color: var(--text-muted); }
 </style>
 </head>
 <body>
-<div class="wrapper">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-badge">🏫 โรงเรียนหนองสำโรงวิทยา</div>
-    <h1>แบบประเมินการเยี่ยมชมโครงงาน</h1>
-    <h2>แซ่บสามเหลี่ยม… นวัตกรรมโอนิกิริอุดรฟิวชัน</h2>
-  </div>
+<!-- ============ Login Screen ============ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-icon">📦</div>
+    <div class="login-title">จัดการสินค้า</div>
+    <div class="login-subtitle">ครูพร้อมสอน — Product Manager</div>
 
-  <!-- Link Banner -->
-  <div class="link-banner">
-    <span class="link-title">ท่านสามารถชมผลการดำเนินงานได้ที่</span>
-    <a href="https://drive.google.com/file/d/1-z10KOs-ZPLvztKVF2ifpvbx4T2e9jRU/view?usp=sharing" target="_blank" class="drive-link">
-      📁 คลิกดูผลการดำเนินงานผ่าน Google Drive
-    </a>
-  </div>
+    <div id="loginError" class="login-error"></div>
 
-  <!-- Form -->
-  <div id="formContainer">
-    <!-- Visitor Info -->
-    <div class="card">
-      <div class="card-title">ข้อมูลผู้เยี่ยมชม</div>
-
-      <div class="field-group">
-        <label class="field-label">ชื่อ-สกุล <span>*</span></label>
-        <input type="text" id="visitorName" placeholder="กรอกชื่อ-สกุล" />
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">สถานะ <span>*</span></label>
-        <div class="status-grid">
-          <button class="status-btn" onclick="selectStatus(this,'คณะกรรมการ/ครู')">
-            <span class="status-icon">👨‍🏫</span>คณะกรรมการ/ครู
-          </button>
-          <button class="status-btn" onclick="selectStatus(this,'ผู้ปกครอง')">
-            <span class="status-icon">👨‍👩‍👧</span>ผู้ปกครอง
-          </button>
-          <button class="status-btn" onclick="selectStatus(this,'นักเรียน')">
-            <span class="status-icon">🎒</span>นักเรียน
-          </button>
-          <button class="status-btn" onclick="selectStatus(this,'บุคคลทั่วไป')">
-            <span class="status-icon">👤</span>บุคคลทั่วไป
-          </button>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">วันที่เยี่ยมชม</label>
-        <input type="date" id="visitDate" />
-      </div>
+    <div class="form-group">
+      <label class="form-label">ชื่อผู้ใช้</label>
+      <input type="text" id="loginUser" class="form-input" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">รหัสผ่าน</label>
+      <input type="password" id="loginPass" class="form-input" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
     </div>
 
-    <!-- Rating -->
-    <div class="card">
-      <div class="card-title">เกณฑ์การประเมิน</div>
-      <div class="score-legend">
-        <span class="legend-pill legend-5">5 ดีเยี่ยม</span>
-        <span class="legend-pill legend-4">4 ดีมาก</span>
-        <span class="legend-pill legend-3">3 ดี</span>
-        <span class="legend-pill legend-2">2 พอใช้</span>
-        <span class="legend-pill legend-1">1 ควรปรับปรุง</span>
-      </div>
-
-      <table class="rating-table">
-        <thead>
-          <tr>
-            <th>ประเด็นการประเมิน</th>
-            <th>5</th><th>4</th><th>3</th><th>2</th><th>1</th>
-          </tr>
-        </thead>
-        <tbody id="criteriaBody"></tbody>
-      </table>
-
-      <div class="score-row">
-        <span class="score-label">รวมคะแนน</span>
-        <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
-        <span class="score-value"><span id="totalScore">0</span><small style="font-size:14px;font-weight:500;color:#999;">/25</small></span>
-      </div>
-    </div>
-
-    <!-- Comments -->
-    <div class="card">
-      <div class="card-title">ข้อเสนอแนะ / คำติชม</div>
-      <textarea id="comments" placeholder="กรอกข้อเสนอแนะหรือคำติชมเพื่อการพัฒนา (ถ้ามี)"></textarea>
-    </div>
-
-    <!-- Error -->
-    <div class="error-box" id="errorBox"></div>
-
-    <!-- Submit -->
-    <button class="submit-btn" id="submitBtn" onclick="submitForm()">
-      <span id="submitText">📨 ส่งแบบประเมิน</span>
-      <div class="loading-spinner" id="spinner"></div>
-    </button>
-  </div>
-
-  <!-- Success -->
-  <div class="success-box" id="successBox">
-    <div class="success-icon">🎉</div>
-    <div class="success-title">ขอบคุณสำหรับการประเมิน!</div>
-    <div class="success-sub" id="successDetail"></div>
-    <button onclick="resetForm()" style="margin-top:18px; padding:12px 28px; background:var(--green); color:white; border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;">📝 ทำแบบประเมินอีกครั้ง</button>
-  </div>
-
-  <div class="footer">
-    <strong>แซ่บสามเหลี่ยม ▲</strong> · โรงเรียนหนองสำโรงวิทยา
+    <button class="btn-primary" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
   </div>
 </div>
 
+<!-- ============ App Screen ============ -->
+<div id="appScreen" class="hidden">
+  <div class="app-header">
+    <h1><span class="icon">📦</span>จัดการสินค้า</h1>
+    <span class="user-tag" id="currentUser"></span>
+    <button class="btn-icon" onclick="doLogout()" title="ออกจากระบบ">⏻</button>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div id="installBanner" class="install-banner">
+    <div style="font-size:24px;">📲</div>
+    <div class="install-text">
+      ติดตั้ง <b>จัดการสินค้า</b> ลงหน้าจอ
+    </div>
+    <button class="btn-install" onclick="installPWA()">ติดตั้ง</button>
+    <button class="btn-dismiss" onclick="dismissInstall()">✕</button>
+  </div>
+
+  <div class="main">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="price" onclick="switchTab('price')">💰 ราคา</button>
+      <button class="tab-btn" data-tab="vip" onclick="switchTab('vip')">👑 VIP</button>
+      <button class="tab-btn" data-tab="systems" onclick="switchTab('systems')">💼 ระบบ</button>
+      <button class="tab-btn" data-tab="subjects" onclick="switchTab('subjects')">📚 วิชา</button>
+    </div>
+
+    <!-- Tab: Price Table -->
+    <div class="tab-panel active" id="tab-price">
+      <div class="card">
+        <div class="card-title">💰 ราคาตามจำนวนชั่วโมง</div>
+        <div class="card-desc">ใช้คำนวณราคาวิชาทั่วไป (ตาม ชม.)</div>
+        <div id="priceList">
+          <div class="empty">⏳ กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: VIP -->
+    <div class="tab-panel" id="tab-vip">
+      <div class="card">
+        <div class="card-title">👑 ราคา VIP กลุ่ม</div>
+        <div class="card-desc">ราคาเหมาแบบสมัครเป็นสมาชิก</div>
+        <div id="vipList">
+          <div class="empty">⏳ กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Systems -->
+    <div class="tab-panel" id="tab-systems">
+      <div class="card">
+        <div class="card-title">💼 ระบบงาน Offline</div>
+        <div class="card-desc">เปิด/ปิด และตั้งราคา ระบบงานแต่ละชนิด</div>
+        <div id="systemsList">
+          <div class="empty">⏳ กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Subjects -->
+    <div class="tab-panel" id="tab-subjects">
+      <div class="card">
+        <div class="card-title">📚 วิชาทั้งหมด</div>
+        <div class="card-desc">เพิ่ม / แก้ไข / ลบ วิชาในระบบ (เก็บใน Sheet "🔗 Drive Links")</div>
+        <div class="subj-filter" id="subjFilter"></div>
+        <div id="subjectsList">
+          <div class="empty">⏳ กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB: Add Subject -->
+  <button class="fab hidden-fab" id="addSubjFab" onclick="openSubjectModal('add')">+</button>
+
+  <!-- Save Bar -->
+  <div class="save-bar" id="saveBar">
+    <button class="btn-cancel" onclick="cancelChanges()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveAll()" id="saveBtn">💾 บันทึก (<span id="changeCount">0</span> รายการ)</button>
+  </div>
+</div>
+
+<!-- Subject Modal -->
+<div class="modal-overlay" id="subjectModal">
+  <div class="modal-content">
+    <div class="modal-title" id="subjectModalTitle">เพิ่มวิชาใหม่</div>
+    <div class="form-group">
+      <label class="form-label">ชั้นเรียน</label>
+      <select id="subjGrade" class="form-input">
+        <option value="ป.1">ป.1</option><option value="ป.2">ป.2</option><option value="ป.3">ป.3</option>
+        <option value="ป.4">ป.4</option><option value="ป.5">ป.5</option><option value="ป.6">ป.6</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">หลักสูตร</label>
+      <select id="subjCurriculum" class="form-input">
+        <option value="68">หลักสูตร 2568</option>
+        <option value="51">หลักสูตร 2551</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ชื่อวิชา</label>
+      <input type="text" id="subjName" class="form-input" placeholder="เช่น ภาษาไทย">
+    </div>
+    <div class="form-group">
+      <label class="form-label">จำนวนชั่วโมง</label>
+      <input type="number" id="subjHours" class="form-input" placeholder="เช่น 80" min="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel-modal" onclick="closeSubjectModal()">ยกเลิก</button>
+      <button class="btn-del-modal" id="subjDelBtn" onclick="deleteSubject()" style="display:none;">ลบ</button>
+      <button class="btn-ok-modal" id="subjSaveBtn" onclick="saveSubject()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
 <script>
-const criteria = [
-  "ความแปลกใหม่ของการนำข้าวไทย/สีธรรมชาติมาทำโอนิกิริ",
-  "รสชาติ ความสะอาด และบรรจุภัณฑ์มีความน่าสนใจ",
-  "ความเหมาะสมของราคา (20 บาท) และโอกาสในการสร้างรายได้",
-  "การนำเสนอผลงาน การอธิบาย และการตอบคำถามของนักเรียน",
-  "ความเป็นไปได้ในการนำไปต่อยอดสร้างรายได้จริง"
-];
+// ============ Configuration ============
+const GOOGLE_SCRIPT_URL = localStorage.getItem('kp_script_url') ||
+  'https://script.google.com/macros/s/AKfycbxQaNC6KDhCY5Jzw5M9XmbvWrLGCVRdjB-LdAV7mKovNYWE9OhMtRw6YvOLVI46Qxj1/exec';
 
-let scores = [0, 0, 0, 0, 0];
-let selectedStatus = '';
+// ============ State ============
+let currentToken = localStorage.getItem('admin_token') || null;
+let currentUser = localStorage.getItem('admin_user') || null;
+let currentRole = localStorage.getItem('admin_role') || 'owner';
 
-// Init
-function init() {
-  // Set today
-  document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
+// Product data
+let productData = {
+  priceTable: {},
+  vipPrices: {},
+  offlineSystems: [],
+  subjects: {}
+};
+let originalData = null;  // สำเนาเดิม (ไว้เทียบหา changes)
+let editingSubject = null;  // {grade, curriculum, oldSubject, oldHours} เมื่อกำลังแก้
+let subjFilterKey = '';  // p1_68, p2_68, ...
 
-  // Build criteria rows
-  const tbody = document.getElementById('criteriaBody');
-  criteria.forEach((c, i) => {
-    const tr = document.createElement('tr');
-    tr.className = 'criteria-row';
-    let cells = `<td class="criteria-cell"><span class="criteria-num">${i+1}.</span>${c}</td>`;
-    [5,4,3,2,1].forEach(v => {
-      cells += `<td class="star-cell"><button class="star-btn" id="btn-${i}-${v}" onclick="setScore(${i},${v})">${v}</button></td>`;
-    });
-    tr.innerHTML = cells;
-    tbody.appendChild(tr);
+let pwaState = {
+  installPromptEvent: null,
+  currentTab: 'price'
+};
+
+// ============ PWA Service Worker ============
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.warn('SW failed:', err));
   });
 }
 
-function selectStatus(btn, val) {
-  document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedStatus = val;
-}
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  pwaState.installPromptEvent = e;
+  if (!localStorage.getItem('kp_product_install_dismissed') &&
+      !window.matchMedia('(display-mode: standalone)').matches) {
+    setTimeout(() => {
+      const b = document.getElementById('installBanner');
+      if (b) b.classList.add('show');
+    }, 3000);
+  }
+});
 
-function setScore(idx, val) {
-  scores[idx] = val;
-  // Update buttons
-  [5,4,3,2,1].forEach(v => {
-    const btn = document.getElementById(`btn-${idx}-${v}`);
-    btn.className = 'star-btn' + (v === val ? ` sel-${v}` : '');
+function installPWA() {
+  if (!pwaState.installPromptEvent) {
+    alert('ลองใช้เมนูเบราว์เซอร์ → "เพิ่มลงในหน้าจอหลัก"');
+    return;
+  }
+  pwaState.installPromptEvent.prompt();
+  pwaState.installPromptEvent.userChoice.then(() => {
+    pwaState.installPromptEvent = null;
+    document.getElementById('installBanner').classList.remove('show');
   });
-  updateTotal();
 }
 
-function updateTotal() {
-  const total = scores.reduce((a,b) => a+b, 0);
-  document.getElementById('totalScore').textContent = total;
-  document.getElementById('scoreBar').style.width = (total/25*100) + '%';
+function dismissInstall() {
+  localStorage.setItem('kp_product_install_dismissed', '1');
+  document.getElementById('installBanner').classList.remove('show');
 }
 
-function showError(msg) {
-  const box = document.getElementById('errorBox');
-  box.textContent = '⚠️ ' + msg;
-  box.classList.add('show');
+// ============ API ============
+function callApi(action, data) {
+  return new Promise((resolve, reject) => {
+    const payload = Object.assign({ action: action, token: currentToken }, data || {});
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(err => reject(err));
+  });
 }
 
-function hideError() {
-  document.getElementById('errorBox').classList.remove('show');
+// ============ Login ============
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.classList.add('show');
 }
 
-async function submitForm() {
-  hideError();
-  const name = document.getElementById('visitorName').value.trim();
-  const date = document.getElementById('visitDate').value;
-  const comments = document.getElementById('comments').value.trim();
-  
-  // ฝัง URL ฐานข้อมูลโดยตรง
-  const sheetsUrl = "https://script.google.com/macros/s/AKfycbwtDmTlzAAAbrqoaxp0QTjxooO85ivN0CICrzp5jluBixEucbj-LEaIK1WjyrTS9A/exec";
-
-  if (!name) { showError('กรุณากรอกชื่อ-สกุล'); return; }
-  if (!selectedStatus) { showError('กรุณาเลือกสถานะ'); return; }
-  const missing = scores.filter(s => s === 0).length;
-  if (missing > 0) { showError(`กรุณาให้คะแนนให้ครบ (ยังเหลือ ${missing} ข้อ)`); return; }
-
-  const total = scores.reduce((a,b)=>a+b,0);
-  const data = {
-    timestamp: new Date().toLocaleString('th-TH'),
-    name, status: selectedStatus, date,
-    score1: scores[0], score2: scores[1], score3: scores[2],
-    score4: scores[3], score5: scores[4],
-    total, comments
-  };
-
-  // UI loading
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  document.getElementById('submitText').textContent = 'กำลังส่งข้อมูล...';
-  document.getElementById('spinner').style.display = 'block';
+async function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!user || !pass) {
+    showLoginError('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
+    return;
+  }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = '⏳ กำลังเข้าสู่ระบบ...';
 
   try {
-    await fetch(sheetsUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  } catch(e) {
-    // no-cors won't error on success; ignore
+    const res = await callApi('login', { username: user, password: pass });
+    if (!res.success) {
+      showLoginError(res.error || 'เข้าสู่ระบบไม่สำเร็จ');
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+      return;
+    }
+    currentToken = res.token;
+    currentUser = res.username || user;
+    currentRole = res.role || 'owner';
+    localStorage.setItem('admin_token', currentToken);
+    localStorage.setItem('admin_user', currentUser);
+    localStorage.setItem('admin_role', currentRole);
+    showApp();
+  } catch (e) {
+    showLoginError('เชื่อมต่อไม่ได้: ' + e.message);
+    btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+  }
+}
+
+function doLogout() {
+  if (!confirm('ออกจากระบบ?')) return;
+  currentToken = null; currentUser = null;
+  localStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_user');
+  localStorage.removeItem('admin_role');
+  location.reload();
+}
+
+function showApp() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('hidden');
+  document.getElementById('currentUser').textContent = currentUser;
+  loadAllData();
+}
+
+// ============ Tabs ============
+function switchTab(tab) {
+  pwaState.currentTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+
+  // FAB เฉพาะแท็บ subjects
+  document.getElementById('addSubjFab').classList.toggle('hidden-fab', tab !== 'subjects');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============ Load All Data ============
+async function loadAllData() {
+  try {
+    const res = await callApi('getProductSettings', {});
+    if (!res.success) {
+      if (res.error === 'unauthorized') { doLogout(); return; }
+      showToast('โหลดไม่สำเร็จ: ' + (res.error || ''), 'error');
+      return;
+    }
+    productData = {
+      priceTable: res.priceTable || {},
+      vipPrices: res.vipPrices || {},
+      offlineSystems: res.offlineSystems || [],
+      subjects: res.subjects || {}
+    };
+    originalData = JSON.parse(JSON.stringify(productData));
+    renderAll();
+  } catch (e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function renderAll() {
+  renderPriceTable();
+  renderVIP();
+  renderSystems();
+  renderSubjects();
+  updateChangeCount();
+}
+
+// ============ Render: Price Table ============
+function renderPriceTable() {
+  const el = document.getElementById('priceList');
+  const keys = Object.keys(productData.priceTable).sort((a, b) => Number(a) - Number(b));
+  if (keys.length === 0) {
+    el.innerHTML = '<div class="empty">📭 ไม่มีข้อมูล</div>';
+    return;
+  }
+  el.innerHTML = keys.map(hrs => `
+    <div class="price-row">
+      <div>
+        <div class="label">${hrs} ชั่วโมง</div>
+        <div class="sub-label">~${Math.round(Number(hrs) / 40)} แผน/สัปดาห์</div>
+      </div>
+      <span style="font-size:13px; color:var(--text-muted);">฿</span>
+      <input type="number" class="price-input" data-price-hrs="${hrs}"
+        value="${productData.priceTable[hrs]}" oninput="onPriceChange(this, '${hrs}')" min="0">
+    </div>
+  `).join('');
+}
+
+function onPriceChange(input, hrs) {
+  const newVal = Number(input.value) || 0;
+  productData.priceTable[hrs] = newVal;
+  const isChanged = originalData.priceTable[hrs] !== newVal;
+  input.classList.toggle('changed', isChanged);
+  updateChangeCount();
+}
+
+// ============ Render: VIP ============
+function renderVIP() {
+  const el = document.getElementById('vipList');
+  const vipItems = [
+    { key: 'vip_13', label: '👑 VIP กลุ่ม ป.1-3', desc: 'รวมแผนทุกวิชา ป.1-3' },
+    { key: 'vip_46', label: '👑 VIP กลุ่ม ป.4-6', desc: 'รวมแผนทุกวิชา ป.4-6' }
+  ];
+  el.innerHTML = vipItems.map(v => `
+    <div class="price-row">
+      <div>
+        <div class="label">${v.label}</div>
+        <div class="sub-label">${v.desc}</div>
+      </div>
+      <span style="font-size:13px; color:var(--text-muted);">฿</span>
+      <input type="number" class="price-input" data-vip="${v.key}"
+        value="${productData.vipPrices[v.key] || 0}" oninput="onVipChange(this, '${v.key}')" min="0">
+    </div>
+  `).join('');
+}
+
+function onVipChange(input, key) {
+  const newVal = Number(input.value) || 0;
+  productData.vipPrices[key] = newVal;
+  const isChanged = (originalData.vipPrices[key] || 0) !== newVal;
+  input.classList.toggle('changed', isChanged);
+  updateChangeCount();
+}
+
+// ============ Render: Systems ============
+function renderSystems() {
+  const el = document.getElementById('systemsList');
+  if (!productData.offlineSystems || productData.offlineSystems.length === 0) {
+    el.innerHTML = '<div class="empty">📭 ไม่มีข้อมูล</div>';
+    return;
+  }
+  el.innerHTML = productData.offlineSystems.map((s, i) => `
+    <div class="sys-item">
+      <div class="sys-icon">${s.icon || '💼'}</div>
+      <div class="sys-info">
+        <div class="name">${escapeHtml(s.name)}</div>
+        <div class="desc">${escapeHtml(s.desc || '')}</div>
+      </div>
+      <span style="font-size:13px; color:var(--text-muted);">฿</span>
+      <input type="number" class="sys-price" data-sys-idx="${i}"
+        value="${s.price}" oninput="onSysPriceChange(this, ${i})" min="0">
+      <button class="sys-toggle ${s.enabled !== false ? 'on' : ''}" onclick="toggleSys(${i})"></button>
+    </div>
+  `).join('');
+}
+
+function onSysPriceChange(input, idx) {
+  productData.offlineSystems[idx].price = Number(input.value) || 0;
+  const orig = originalData.offlineSystems[idx];
+  if (orig && orig.price !== productData.offlineSystems[idx].price) {
+    input.style.borderColor = 'var(--color-warning)';
+    input.style.background = '#fffbeb';
+  } else {
+    input.style.borderColor = '';
+    input.style.background = '';
+  }
+  updateChangeCount();
+}
+
+function toggleSys(idx) {
+  productData.offlineSystems[idx].enabled = !(productData.offlineSystems[idx].enabled !== false);
+  renderSystems();
+  updateChangeCount();
+}
+
+// ============ Render: Subjects ============
+function renderSubjects() {
+  const filterEl = document.getElementById('subjFilter');
+  const listEl = document.getElementById('subjectsList');
+
+  // สร้าง filter buttons จาก keys ที่มีจริง
+  const keys = Object.keys(productData.subjects).sort();
+  if (!subjFilterKey && keys.length > 0) subjFilterKey = keys[0];
+
+  filterEl.innerHTML = keys.map(k => {
+    const [grade, curr] = k.split('_');
+    const gradeNum = grade.replace('p', 'ป.');
+    return `<button class="subj-filter-btn ${k === subjFilterKey ? 'active' : ''}"
+      onclick="setSubjFilter('${k}')">${gradeNum} (${curr})</button>`;
+  }).join('');
+
+  const list = productData.subjects[subjFilterKey] || [];
+  if (list.length === 0) {
+    listEl.innerHTML = '<div class="empty">📭 ไม่มีวิชาในชั้น/หลักสูตรนี้<br><span style="font-size:11px;">กดปุ่ม + มุมขวาเพื่อเพิ่ม</span></div>';
+    return;
+  }
+  // เรียงตามชื่อวิชา
+  const sorted = [...list].sort((a, b) => a.subject.localeCompare(b.subject, 'th'));
+  listEl.innerHTML = sorted.map(s => `
+    <div class="subj-row">
+      <div class="subj-name">📖 ${escapeHtml(s.subject)}</div>
+      <div class="subj-hours">${s.hours} ชม.</div>
+      <div class="subj-actions">
+        <button class="btn-edit" onclick="openSubjectModal('edit', '${escapeHtml(s.subject)}', ${s.hours})" title="แก้ไข">✏️</button>
+        <button class="btn-del" onclick="confirmDeleteSubject('${escapeHtml(s.subject)}', ${s.hours})" title="ลบ">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setSubjFilter(key) {
+  subjFilterKey = key;
+  renderSubjects();
+}
+
+// ============ Subject Modal ============
+function openSubjectModal(mode, subjectName, hours) {
+  const [grade, curr] = (subjFilterKey || 'p1_68').split('_');
+  const gradeStr = grade.replace('p', 'ป.');
+
+  document.getElementById('subjGrade').value = gradeStr;
+  document.getElementById('subjCurriculum').value = curr;
+  document.getElementById('subjDelBtn').style.display = 'none';
+
+  if (mode === 'edit') {
+    document.getElementById('subjectModalTitle').textContent = 'แก้ไขวิชา';
+    document.getElementById('subjName').value = subjectName;
+    document.getElementById('subjHours').value = hours;
+    editingSubject = { grade: gradeStr, curriculum: curr, oldSubject: subjectName, oldHours: hours };
+    document.getElementById('subjDelBtn').style.display = 'block';
+  } else {
+    document.getElementById('subjectModalTitle').textContent = 'เพิ่มวิชาใหม่';
+    document.getElementById('subjName').value = '';
+    document.getElementById('subjHours').value = '';
+    editingSubject = null;
+  }
+  document.getElementById('subjectModal').classList.add('show');
+}
+
+function closeSubjectModal() {
+  document.getElementById('subjectModal').classList.remove('show');
+}
+
+async function saveSubject() {
+  const grade = document.getElementById('subjGrade').value.trim();
+  const curr = document.getElementById('subjCurriculum').value.trim();
+  const subject = document.getElementById('subjName').value.trim();
+  const hours = Number(document.getElementById('subjHours').value) || 0;
+
+  if (!subject || hours <= 0) {
+    showToast('กรุณากรอกชื่อวิชาและจำนวนชั่วโมง', 'error');
+    return;
   }
 
-  // Show success
-  setTimeout(() => {
-    document.getElementById('formContainer').style.display = 'none';
-    const successBox = document.getElementById('successBox');
-    successBox.classList.add('show');
-    document.getElementById('successDetail').innerText =
-      `${name} · สถานะ: ${selectedStatus} · คะแนนรวม: ${total}/25\n\n✅ บันทึกข้อมูลลงฐานข้อมูลเรียบร้อยแล้ว`;
-    window.scrollTo({top:0, behavior:'smooth'});
-  }, 800);
+  const isEdit = !!editingSubject;
+  const op = isEdit ? 'update' : 'add';
+  const payload = { op, grade, curriculum: curr, subject, hours };
+  if (isEdit) {
+    payload.oldSubject = editingSubject.oldSubject;
+    payload.oldHours = editingSubject.oldHours;
+  }
+
+  showToast('⏳ กำลังบันทึก...');
+  try {
+    const res = await callApi('subjectOperation', payload);
+    if (res.success) {
+      showToast(res.message || 'บันทึกเรียบร้อย', 'success');
+      closeSubjectModal();
+      // อัปเดต local data
+      const newKey = 'p' + grade.replace('ป.', '') + '_' + curr;
+      if (!productData.subjects[newKey]) productData.subjects[newKey] = [];
+
+      if (isEdit) {
+        const oldKey = 'p' + editingSubject.grade.replace('ป.', '') + '_' + editingSubject.curriculum;
+        if (productData.subjects[oldKey]) {
+          productData.subjects[oldKey] = productData.subjects[oldKey].filter(
+            x => !(x.subject === editingSubject.oldSubject && x.hours === editingSubject.oldHours)
+          );
+        }
+      }
+      productData.subjects[newKey].push({ subject, hours });
+      originalData.subjects = JSON.parse(JSON.stringify(productData.subjects));
+      subjFilterKey = newKey;
+      renderSubjects();
+    } else {
+      showToast('❌ ' + (res.error || 'บันทึกไม่สำเร็จ'), 'error');
+    }
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  }
 }
 
-function resetForm() {
-  document.getElementById('formContainer').style.display = 'block';
-  document.getElementById('successBox').classList.remove('show');
-  document.getElementById('visitorName').value = '';
-  document.getElementById('comments').value = '';
-  document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
-  selectedStatus = '';
-  scores = [0,0,0,0,0];
-  document.querySelectorAll('.status-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.star-btn').forEach(b=>b.className='star-btn');
-  updateTotal();
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = false;
-  document.getElementById('submitText').textContent = '📨 ส่งแบบประเมิน';
-  document.getElementById('spinner').style.display = 'none';
-  hideError();
-  window.scrollTo({top:0, behavior:'smooth'});
+function confirmDeleteSubject(subject, hours) {
+  if (!confirm(`ลบวิชา "${subject}" (${hours} ชม.)?`)) return;
+  const [grade, curr] = subjFilterKey.split('_');
+  const gradeStr = grade.replace('p', 'ป.');
+  callApi('subjectOperation', {
+    op: 'delete', grade: gradeStr, curriculum: curr,
+    subject, hours, oldSubject: subject, oldHours: hours
+  }).then(res => {
+    if (res.success) {
+      showToast('ลบวิชาเรียบร้อย', 'success');
+      productData.subjects[subjFilterKey] = (productData.subjects[subjFilterKey] || []).filter(
+        x => !(x.subject === subject && x.hours === hours)
+      );
+      originalData.subjects = JSON.parse(JSON.stringify(productData.subjects));
+      renderSubjects();
+    } else {
+      showToast('❌ ' + (res.error || ''), 'error');
+    }
+  }).catch(e => showToast('❌ ' + e.message, 'error'));
 }
 
-init();
+function deleteSubject() {
+  if (!editingSubject) return;
+  closeSubjectModal();
+  confirmDeleteSubject(editingSubject.oldSubject, editingSubject.oldHours);
+}
+
+// ============ Change tracking + Save ============
+function countChanges() {
+  if (!originalData) return 0;
+  let count = 0;
+  // priceTable
+  Object.keys(productData.priceTable).forEach(k => {
+    if (productData.priceTable[k] !== originalData.priceTable[k]) count++;
+  });
+  // vipPrices
+  Object.keys(productData.vipPrices).forEach(k => {
+    if ((productData.vipPrices[k] || 0) !== (originalData.vipPrices[k] || 0)) count++;
+  });
+  // offlineSystems
+  productData.offlineSystems.forEach((s, i) => {
+    const o = originalData.offlineSystems[i];
+    if (!o) return;
+    if (o.price !== s.price || (o.enabled !== false) !== (s.enabled !== false)) count++;
+  });
+  return count;
+}
+
+function updateChangeCount() {
+  const n = countChanges();
+  const bar = document.getElementById('saveBar');
+  const lbl = document.getElementById('changeCount');
+  if (lbl) lbl.textContent = n;
+  if (bar) bar.classList.toggle('show', n > 0);
+}
+
+function cancelChanges() {
+  if (!confirm('ยกเลิกการแก้ไขทั้งหมด?')) return;
+  productData = JSON.parse(JSON.stringify(originalData));
+  renderAll();
+  showToast('ยกเลิกแล้ว');
+}
+
+async function saveAll() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> กำลังบันทึก...';
+  try {
+    const res = await callApi('saveProductSettings', {
+      priceTable: productData.priceTable,
+      vipPrices: productData.vipPrices,
+      offlineSystems: productData.offlineSystems
+    });
+    if (res.success) {
+      showToast('✅ บันทึกเรียบร้อย! ลูกค้าจะเห็นราคาใหม่ทันที', 'success');
+      originalData = JSON.parse(JSON.stringify(productData));
+      renderAll();
+    } else {
+      showToast('❌ ' + (res.error || ''), 'error');
+    }
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '💾 บันทึก (<span id="changeCount">0</span> รายการ)';
+    updateChangeCount();
+  }
+}
+
+// ============ Toast ============
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============ Helpers ============
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ Init ============
+if (currentToken && currentUser) {
+  showApp();
+}
 </script>
 </body>
 </html>
