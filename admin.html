@@ -1,0 +1,3444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>🎓 ครูพร้อมสอน Admin</title>
+
+<!-- 🆕 v7.5: PWA Meta Tags -->
+<meta name="theme-color" content="#818cf8">
+<meta name="description" content="ระบบจัดการออเดอร์แผนการสอนสำหรับครูพร้อมสอน">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ครูพร้อมสอน">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 🆕 v7.5: CSS Variables + Dark Mode */
+:root {
+  --color-primary: #818cf8;
+  --color-primary-dark: #6366f1;
+  --color-accent: #f0abfc;
+  --color-warm: #fb923c;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  --bg-app: #f5f3ff;
+  --bg-card: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #f9fafb;
+  --bg-elevated: #f3f4f6;
+
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+
+  --border-default: #e5e7eb;
+  --border-light: #f3f4f6;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(129, 140, 248, 0.15);
+  --shadow-lg: 0 8px 24px rgba(129, 140, 248, 0.25);
+
+  --gradient-header: linear-gradient(135deg, #818cf8, #a78bfa, #f0abfc);
+  --gradient-card-1: linear-gradient(135deg, #fef3c7, #fde68a);
+  --gradient-card-2: linear-gradient(135deg, #ddd6fe, #e9d5ff);
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --bg-app: #0f172a;
+  --bg-card: #1e293b;
+  --bg-surface: #1e293b;
+  --bg-input: #334155;
+  --bg-hover: #334155;
+  --bg-elevated: #475569;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+
+  --border-default: #334155;
+  --border-light: #1e293b;
+
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+
+  --gradient-card-1: linear-gradient(135deg, #422006, #78350f);
+  --gradient-card-2: linear-gradient(135deg, #1e1b4b, #312e81);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ===== Header ===== */
+.app-header {
+  position: sticky; top: 0; z-index: 100;
+  background: linear-gradient(135deg, #818cf8, #a78bfa, #f0abfc);
+  color: white;
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.2);
+}
+.app-header h1 { font-size: 17px; font-weight: 600; }
+.app-header h1 .icon { margin-right: 4px; }
+.user-menu { display: flex; align-items: center; gap: 8px; }
+.user-name { font-size: 13px; opacity: 0.9; }
+.btn-icon {
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.btn-icon:active { background: rgba(255,255,255,0.3); }
+
+/* ===== Login Screen ===== */
+.login-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #fdf4ff 50%, #fef9c3 100%);
+}
+.login-card {
+  background: white; border-radius: 16px;
+  padding: 28px 24px;
+  width: 100%; max-width: 360px;
+  box-shadow: 0 12px 32px rgba(129, 140, 248, 0.15);
+}
+.login-logo {
+  width: 64px; height: 64px; border-radius: 16px;
+  background: linear-gradient(135deg, #818cf8, #a78bfa, #f0abfc);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin: 0 auto 16px;
+  box-shadow: 0 8px 20px rgba(129, 140, 248, 0.3);
+}
+.login-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 4px; color: #4c4ca8; }
+.login-subtitle { text-align: center; font-size: 13px; color: #6b7280; margin-bottom: 24px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+.form-input {
+  width: 100%; padding: 12px 14px;
+  border: 2px solid #e5e7eb; border-radius: 10px;
+  font-family: inherit; font-size: 15px;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.form-input:focus {
+  outline: none; border-color: #a78bfa;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+}
+.btn-primary {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  color: white; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 6px 16px rgba(129, 140, 248, 0.3);
+  margin-top: 8px;
+}
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.error-msg {
+  background: #fee2e2; color: #b91c1c;
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; margin-bottom: 14px;
+  border: 1px solid #fca5a5;
+}
+.error-msg.hidden { display: none; }
+
+/* ===== Main Container ===== */
+.main {
+  padding: 12px;
+  padding-bottom: 80px;
+  min-height: calc(100vh - 56px);
+}
+
+/* ===== Filter Tabs ===== */
+/* 🆕 Mini Dashboard */
+.mini-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.mini-stat {
+  background: white;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.mini-stat:first-child {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+.mini-stat:nth-child(2) {
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+}
+.mini-stat-icon { font-size: 24px; flex-shrink: 0; }
+.mini-stat-info { flex: 1; min-width: 0; }
+.mini-stat-label { font-size: 11px; color: #6b7280; font-weight: 600; }
+.mini-stat:first-child .mini-stat-label { color: #92400e; }
+.mini-stat:nth-child(2) .mini-stat-label { color: #4338ca; }
+.mini-stat-value { font-size: 18px; font-weight: 700; color: #1f2937; line-height: 1.2; margin-top: 2px; }
+.mini-stat:first-child .mini-stat-value { color: #92400e; }
+.mini-stat:nth-child(2) .mini-stat-value { color: #4338ca; }
+.mini-stat-sub { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+
+.filter-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  background: white;
+  padding: 8px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+/* 🆕 Staff role: ซ่อน tab "ทั้งหมด" และเปลี่ยน grid เป็น 3 cols */
+.filter-tabs.staff-mode {
+  grid-template-columns: repeat(3, 1fr);
+}
+.filter-tabs.staff-mode #tabAll {
+  display: none;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tab {
+  padding: 14px 8px;
+  border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  color: #6b7280; cursor: pointer;
+  border: none; background: transparent;
+  font-family: inherit;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  min-height: 60px;
+  line-height: 1.2;
+}
+.filter-tab:active { transform: scale(0.95); }
+.filter-tab.active {
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  color: white;
+  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.35);
+}
+.filter-tab .filter-tab-label {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.filter-tab .badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; height: 24px;
+  background: #f0abfc; color: white;
+  border-radius: 12px; padding: 0 8px;
+  font-size: 12px; font-weight: 700;
+}
+.filter-tab.active .badge {
+  background: white; color: #a78bfa;
+}
+@media (max-width: 380px) {
+  .filter-tab { padding: 10px 4px; min-height: 52px; }
+  .filter-tab .filter-tab-label { font-size: 11px; }
+  .filter-tab .badge { min-width: 20px; height: 20px; font-size: 11px; }
+}
+
+/* ===== Order Cards ===== */
+.orders-list { display: flex; flex-direction: column; gap: 10px; }
+.order-card {
+  background: white; border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-left: 4px solid #d1d5db;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.order-card:active { transform: scale(0.98); }
+.order-card.pending { border-left-color: #fcd34d; }
+.order-card.paid { border-left-color: #60a5fa; }
+.order-card.approved { border-left-color: #a78bfa; }
+.order-card.completed { border-left-color: #34d399; }
+.order-card.cancelled { border-left-color: #f87171; opacity: 0.7; }
+
+.order-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 8px;
+}
+.order-card-id {
+  font-size: 12px; color: #6b7280;
+  font-family: 'Courier New', monospace;
+}
+.order-card-status {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 999px;
+}
+.order-card-status.pending { background: #fef9c3; color: #a16207; }
+.order-card-status.paid { background: #dbeafe; color: #1e40af; }
+.order-card-status.approved { background: #ede9fe; color: #6b21a8; }
+.order-card-status.completed { background: #dcfce7; color: #15803d; }
+.order-card-status.cancelled { background: #fee2e2; color: #b91c1c; }
+
+.order-card-customer {
+  font-size: 14px; font-weight: 600; color: #1f2937;
+  margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.order-card-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: #6b7280;
+}
+.order-card-amount {
+  font-size: 16px; font-weight: 700;
+  background: linear-gradient(135deg, #818cf8, #f0abfc);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center; padding: 60px 24px;
+  color: #9ca3af;
+}
+.empty-state-emoji { font-size: 48px; margin-bottom: 12px; }
+.empty-state-text { font-size: 14px; }
+
+/* ===== Loading ===== */
+.loading {
+  text-align: center; padding: 40px 20px;
+  color: #6b7280; font-size: 13px;
+}
+.spinner {
+  display: inline-block; width: 24px; height: 24px;
+  border: 3px solid #e5e7eb; border-top-color: #a78bfa;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  margin-bottom: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Order Detail Page ===== */
+.detail-page {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: #f5f3ff; z-index: 200;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  -webkit-overflow-scrolling: touch;
+}
+.detail-page.show { transform: translateX(0); }
+
+.detail-header {
+  position: sticky; top: 0; z-index: 10;
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  color: white; padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.2);
+}
+.btn-back {
+  background: none; border: none; color: white;
+  font-size: 22px; padding: 4px 8px; cursor: pointer;
+  font-family: inherit;
+}
+.detail-header-title { font-size: 15px; font-weight: 600; flex: 1; }
+
+.detail-body {
+  padding: 12px;
+  padding-bottom: 180px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.detail-action-bar {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 60px;
+  background: white;
+  padding: 14px 16px;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 100;
+  box-shadow: 0 -6px 20px rgba(0,0,0,0.08), 0 6px 20px rgba(0,0,0,0.08);
+  display: none;
+}
+.detail-action-bar.show { display: flex; gap: 10px; }
+.detail-action-bar .btn-action { flex: 1; }
+
+.info-card {
+  background: white; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.info-row {
+  display: flex; justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.info-row + .info-row { border-top: 1px solid #f3f4f6; }
+.info-label { color: #6b7280; }
+.info-value { color: #1f2937; font-weight: 500; text-align: right; word-break: break-all; }
+
+.section-title {
+  font-size: 13px; font-weight: 700; color: #4b5563;
+  margin: 16px 0 8px; padding: 0 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.subject-card {
+  background: white; border-radius: 10px;
+  padding: 12px; margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 10px;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.subject-card.selected {
+  border-color: #a78bfa;
+  background: linear-gradient(135deg, #faf5ff, #fdf4ff);
+}
+.subject-card.disabled {
+  opacity: 0.6; cursor: not-allowed;
+  background: #f9fafb;
+}
+.subject-checkbox {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid #d1d5db;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  transition: all 0.15s;
+}
+.subject-card.selected .subject-checkbox {
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  border-color: transparent;
+  color: white;
+}
+.subject-info { flex: 1; min-width: 0; }
+.subject-name { font-size: 14px; font-weight: 500; color: #1f2937; }
+.subject-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.subject-status { font-size: 11px; margin-top: 4px; }
+.subject-status.ok { color: #15803d; }
+.subject-status.warn { color: #dc2626; }
+
+.warning-box {
+  background: #fef9c3; border: 1px solid #fde68a;
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 12px; color: #713f12;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+/* ===== Slip Display ===== */
+.slip-card {
+  background: white; border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.slip-img {
+  width: 100%; max-height: 480px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f9fafb;
+  cursor: pointer;
+  display: block;
+  border: 1px solid #e5e7eb;
+}
+.slip-actions {
+  display: flex; gap: 8px;
+  margin-top: 10px;
+}
+.slip-action-btn {
+  flex: 1; text-align: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  color: white !important;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+}
+.slip-action-btn:active { opacity: 0.8; }
+.slip-error {
+  padding: 16px; text-align: center;
+  font-size: 13px; color: #6b7280;
+}
+.slip-error a {
+  color: #7c7ce0; text-decoration: underline;
+}
+.no-slip-card {
+  background: #fef9c3; border: 1px solid #fde68a;
+  border-radius: 10px; padding: 14px;
+  font-size: 13px; color: #713f12;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+/* Slip fullscreen viewer */
+.slip-fullscreen {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.slip-fullscreen.show { display: flex; }
+.slip-fullscreen img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+}
+.slip-fullscreen-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: white; border: none;
+  font-size: 22px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ===== Slip Viewer ===== */
+.slip-viewer {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.totals-box {
+  background: linear-gradient(135deg, #4c4ca8, #6b5bc4);
+  color: white; border-radius: 12px;
+  padding: 16px; margin: 12px 0;
+}
+.totals-row {
+  display: flex; justify-content: space-between;
+  font-size: 13px; padding: 3px 0;
+}
+.totals-row.discount { color: #fbcfe8; }
+.totals-divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 8px 0; }
+.totals-net {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 6px;
+}
+.totals-net-label { font-size: 13px; opacity: 0.85; }
+.totals-net-amount {
+  font-size: 22px; font-weight: 700;
+  background: linear-gradient(135deg, #fde68a, #f0abfc);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== Action Buttons ===== */
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: white; padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  display: flex; gap: 8px;
+  z-index: 10;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+.btn-action {
+  flex: 1; padding: 14px;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-action:active { transform: scale(0.97); }
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-success {
+  background: linear-gradient(135deg, #6ee7b7, #34d399);
+  color: white;
+  box-shadow: 0 4px 12px rgba(110, 231, 183, 0.4);
+}
+.btn-warning {
+  background: linear-gradient(135deg, #fcd34d, #fbbf24);
+  color: white;
+  box-shadow: 0 4px 12px rgba(252, 211, 77, 0.4);
+}
+.btn-secondary {
+  background: white; color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+.btn-danger {
+  background: #fee2e2; color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed; bottom: 80px; left: 16px; right: 16px;
+  background: rgba(31, 41, 55, 0.95);
+  color: white; padding: 12px 16px;
+  border-radius: 10px; font-size: 13px;
+  z-index: 1000;
+  text-align: center;
+  transform: translateY(120%);
+  transition: transform 0.3s ease;
+  line-height: 1.5;
+}
+.toast.show { transform: translateY(0); }
+.toast.success { background: rgba(21, 128, 61, 0.95); }
+.toast.error { background: rgba(185, 28, 28, 0.95); }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500;
+  display: none; align-items: flex-end;
+  animation: fadeIn 0.2s;
+}
+.modal-overlay.show { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-sheet {
+  background: white; width: 100%;
+  border-radius: 18px 18px 0 0;
+  padding: 16px 16px 24px;
+  max-height: 80vh; overflow-y: auto;
+  animation: slideUp 0.25s;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.modal-handle {
+  width: 40px; height: 4px;
+  background: #d1d5db; border-radius: 2px;
+  margin: 0 auto 12px;
+}
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+.modal-actions { display: flex; flex-direction: column; gap: 8px; }
+.modal-action-btn {
+  padding: 14px;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 10px;
+}
+.modal-action-btn .icon { font-size: 18px; }
+.modal-action-btn.paid { background: #dbeafe; color: #1e40af; }
+.modal-action-btn.cancelled { background: #fee2e2; color: #b91c1c; }
+.modal-action-btn.cancel { background: #f3f4f6; color: #6b7280; justify-content: center; }
+.modal-action-btn:active { opacity: 0.8; }
+
+/* ===== Result Screen ===== */
+.result-screen {
+  background: white; border-radius: 12px;
+  padding: 20px 16px; margin: 16px 0;
+  text-align: center;
+}
+.result-icon { font-size: 48px; margin-bottom: 8px; }
+.result-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.result-detail { font-size: 13px; color: #6b7280; line-height: 1.6; }
+.result-detail .row { padding: 4px 0; }
+.result-detail .ok { color: #15803d; }
+.result-detail .err { color: #b91c1c; }
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   🆕 v7.5: PWA Bottom Navigation
+   ============================================================ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-default);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  z-index: 90;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+}
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  transition: all 0.2s;
+  border-radius: 8px;
+  position: relative;
+}
+.bottom-nav-item .icon { font-size: 22px; line-height: 1; }
+.bottom-nav-item .label { font-weight: 500; }
+.bottom-nav-item.active {
+  color: var(--color-primary);
+}
+.bottom-nav-item.active .icon {
+  transform: scale(1.1);
+}
+.bottom-nav-item .nav-badge {
+  position: absolute;
+  top: 4px; right: 14px;
+  background: var(--color-danger);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  padding: 0 4px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg-card);
+}
+
+/* เผื่อที่ว่างใต้เนื้อหา ไม่ให้โดน bottom-nav ทับ */
+.with-bottom-nav { padding-bottom: 76px; }
+
+/* Tab panels */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============================================================
+   🆕 v7.5: PWA Install Prompt Banner
+   ============================================================ */
+.install-banner {
+  display: none;
+  position: fixed; top: 60px; left: 12px; right: 12px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow-lg);
+  z-index: 95;
+  border: 1px solid var(--border-default);
+  animation: slideDown 0.3s ease;
+}
+.install-banner.show { display: flex; align-items: center; gap: 10px; }
+.install-banner .install-icon { font-size: 28px; }
+.install-banner .install-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.install-banner .install-text b { color: var(--color-primary); }
+.install-banner .install-actions { display: flex; flex-direction: column; gap: 6px; }
+.install-banner button {
+  border: none; border-radius: 8px;
+  padding: 6px 12px;
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer;
+}
+.install-banner .btn-install {
+  background: var(--color-primary); color: white;
+}
+.install-banner .btn-dismiss {
+  background: transparent; color: var(--text-muted);
+}
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================================
+   🆕 v7.5: Dark Mode Toggle
+   ============================================================ */
+.theme-toggle {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.35); }
+
+/* ============================================================
+   🆕 v7.5: Pull-to-Refresh Indicator
+   ============================================================ */
+.pull-refresh-indicator {
+  position: fixed; top: 60px; left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: var(--bg-card);
+  border-radius: 50%;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md);
+  z-index: 80;
+  transition: transform 0.2s;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+.pull-refresh-indicator.show {
+  transform: translateX(-50%) translateY(20px);
+}
+.pull-refresh-indicator.refreshing .icon {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   🆕 v7.5: Calendar View (Feature C)
+   ============================================================ */
+.calendar-container {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+  border: 1px solid var(--border-default);
+}
+.calendar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.calendar-title {
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+}
+.calendar-nav-btn {
+  background: var(--bg-elevated);
+  border: none;
+  border-radius: 8px;
+  width: 32px; height: 32px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.calendar-nav-btn:hover { background: var(--color-primary); color: white; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.calendar-day-name {
+  text-align: center;
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 0;
+}
+.calendar-day-name.sun { color: var(--color-danger); }
+.calendar-day {
+  aspect-ratio: 1 / 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.calendar-day:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: scale(1.05);
+}
+.calendar-day.empty {
+  background: transparent;
+  cursor: default;
+}
+.calendar-day.empty:hover { transform: none; }
+.calendar-day.today {
+  border: 2px solid var(--color-primary);
+  font-weight: 700;
+}
+.calendar-day.selected {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+}
+.calendar-day .day-num {
+  font-weight: 600;
+}
+.calendar-day .day-amount {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-top: 1px;
+}
+/* Heatmap colors */
+.calendar-day.heat-low { background: #ddd6fe; color: #5b21b6; }
+.calendar-day.heat-mid { background: #a78bfa; color: white; }
+.calendar-day.heat-high { background: #6d28d9; color: white; }
+[data-theme="dark"] .calendar-day.heat-low { background: #3730a3; color: #e0e7ff; }
+[data-theme="dark"] .calendar-day.heat-mid { background: #6d28d9; color: white; }
+[data-theme="dark"] .calendar-day.heat-high { background: #a78bfa; color: white; }
+
+.calendar-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--gradient-card-2);
+  border-radius: 10px;
+  font-size: 13px;
+}
+.calendar-summary .label { color: var(--text-secondary); }
+.calendar-summary .value { font-weight: 700; color: var(--color-primary-dark); font-size: 15px; }
+
+.calendar-day-orders {
+  margin-top: 12px;
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+}
+.calendar-day-orders .empty-msg {
+  text-align: center; color: var(--text-muted); padding: 18px 0; font-size: 13px;
+}
+
+/* ============================================================
+   🆕 v7.5: Bulk Actions (Feature D)
+   ============================================================ */
+.bulk-toolbar {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 12px 16px calc(12px + env(safe-area-inset-top)) 16px;
+  z-index: 110;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-lg);
+}
+.bulk-toolbar.show { display: flex; }
+.bulk-toolbar .close-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.bulk-toolbar .count-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+}
+.bulk-toolbar .bulk-btn {
+  background: white;
+  color: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.bulk-toolbar .bulk-btn.danger {
+  background: var(--color-danger);
+  color: white;
+}
+/* Order card in selection mode */
+.order-card.bulk-mode {
+  position: relative;
+  padding-left: 50px;
+}
+.order-card.bulk-mode::before {
+  content: '';
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 22px;
+  border: 2px solid var(--border-default);
+  border-radius: 50%;
+  background: var(--bg-card);
+  transition: all 0.2s;
+}
+.order-card.bulk-mode.selected::before {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 4px var(--bg-card);
+}
+.order-card.bulk-mode.selected {
+  background: linear-gradient(to right, rgba(129,140,248,0.08), transparent);
+}
+
+/* ============================================================
+   🆕 v7.5: Sound Settings (Feature B)
+   ============================================================ */
+.sound-settings {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-default);
+}
+.sound-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+.sound-row:last-child { border-bottom: none; }
+.sound-row .label {
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+}
+.sound-row .desc {
+  font-size: 11px; color: var(--text-muted); margin-top: 2px;
+}
+.toggle-switch {
+  position: relative;
+  width: 48px; height: 28px;
+  background: var(--border-default);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: none;
+  padding: 0;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 24px; height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on { background: var(--color-primary); }
+.toggle-switch.on::after { transform: translateX(20px); }
+
+.sound-picker {
+  display: flex; gap: 6px; margin-top: 8px;
+}
+.sound-picker button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid var(--border-default);
+  background: var(--bg-card);
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.sound-picker button.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Settings section header */
+.settings-section { margin-bottom: 18px; }
+.settings-section h3 {
+  font-size: 13px; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+/* ============================================================
+   🆕 v7.5: Top Subjects Card (Stats Tab)
+   ============================================================ */
+.top-subjects-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+  margin-top: 14px;
+}
+.top-subjects-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.top-subjects-title {
+  font-size: 15px; font-weight: 700; color: var(--text-primary);
+}
+.top-refresh-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+.top-refresh-btn:hover { background: var(--color-primary); color: white; }
+
+.top-subjects-list .top-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-elevated);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-default);
+}
+.top-subjects-list .top-row:last-child { margin-bottom: 0; }
+.top-rank {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px;
+  background: var(--color-primary); color: white;
+  flex-shrink: 0;
+}
+.top-rank.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.top-rank.silver { background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
+.top-rank.bronze { background: linear-gradient(135deg, #f97316, #c2410c); }
+.top-subject-name {
+  flex: 1; min-width: 0;
+  font-weight: 600; font-size: 13px; color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.top-subject-count {
+  background: var(--color-primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.top-empty {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ============================================================
+   🆕 v7.5: Customers Tab
+   ============================================================ */
+.customers-header-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+}
+.customers-title {
+  font-size: 15px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.customers-count {
+  font-size: 12px; color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.customer-dropdown {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-input);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.customer-dropdown:focus {
+  outline: none; border-color: var(--color-primary);
+}
+
+.customer-summary-card {
+  background: var(--gradient-card-2);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-default);
+}
+.customer-summary-name {
+  font-size: 15px; font-weight: 700; color: var(--color-primary-dark);
+  margin-bottom: 6px;
+}
+.customer-summary-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.customer-summary-row .label { color: var(--text-secondary); }
+.customer-summary-row .value { font-weight: 700; color: var(--text-primary); }
+
+.history-order-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-default);
+}
+.history-order-card .head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.history-order-card .order-id {
+  font-weight: 700; font-size: 13px; color: var(--text-primary);
+}
+.history-order-card .order-date {
+  font-size: 11px; color: var(--text-muted);
+}
+.history-order-card .items-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 6px 0;
+  white-space: pre-line;
+}
+.history-order-card .foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-default);
+}
+.history-order-card .status-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.history-order-card .amount {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 14px;
+}
+.history-order-card .status-completed { background: #d1fae5; color: #065f46; }
+.history-order-card .status-paid { background: #dbeafe; color: #1e40af; }
+.history-order-card .status-pending { background: #fef3c7; color: #92400e; }
+.history-order-card .status-cancelled { background: #fee2e2; color: #991b1b; }
+[data-theme="dark"] .history-order-card .status-completed { background: #065f46; color: #d1fae5; }
+[data-theme="dark"] .history-order-card .status-paid { background: #1e40af; color: #dbeafe; }
+[data-theme="dark"] .history-order-card .status-pending { background: #78350f; color: #fef3c7; }
+[data-theme="dark"] .history-order-card .status-cancelled { background: #7f1d1d; color: #fee2e2; }
+</style>
+</head>
+<body>
+
+<!-- ============ Login Screen ============ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🎓</div>
+    <div class="login-title">ครูพร้อมสอน Admin</div>
+    <div class="login-subtitle">ระบบจัดการคำสั่งซื้อ</div>
+
+    <div id="loginError" class="error-msg hidden"></div>
+
+    <div class="form-group">
+      <label class="form-label">ชื่อผู้ใช้</label>
+      <input type="text" id="loginUsername" class="form-input" autocomplete="username" autocapitalize="none" autocorrect="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">รหัสผ่าน</label>
+      <input type="password" id="loginPassword" class="form-input" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button>
+  </div>
+</div>
+
+<!-- ============ App Screen ============ -->
+<div id="appScreen" class="hidden">
+  <div class="app-header">
+    <h1><span class="icon">🎓</span>ครูพร้อมสอน</h1>
+    <div class="user-menu">
+      <span class="user-name" id="currentUser"></span>
+      <!-- 🆕 v7.5: Dark Mode Toggle -->
+      <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="สลับโหมดสีสว่าง/มืด">🌙</button>
+      <button class="btn-icon" onclick="doLogout()" title="ออกจากระบบ">⏻</button>
+    </div>
+  </div>
+
+  <!-- 🆕 v7.5: PWA Install Banner -->
+  <div id="installBanner" class="install-banner">
+    <div class="install-icon">📲</div>
+    <div class="install-text">
+      เพิ่ม <b>ครูพร้อมสอน Admin</b> ลงหน้าจอหลัก<br>
+      <span style="font-size:11px; color:var(--text-muted);">เปิดใช้งานเหมือนแอปเลย!</span>
+    </div>
+    <div class="install-actions">
+      <button class="btn-install" onclick="installPWA()">ติดตั้ง</button>
+      <button class="btn-dismiss" onclick="dismissInstall()">ปิด</button>
+    </div>
+  </div>
+
+  <!-- 🆕 v7.5: Pull-to-Refresh Indicator -->
+  <div class="pull-refresh-indicator" id="pullRefreshInd"><span class="icon">🔄</span></div>
+
+  <!-- 🆕 v7.5: Bulk Actions Toolbar -->
+  <div class="bulk-toolbar" id="bulkToolbar">
+    <button class="close-btn" onclick="exitBulkMode()">✕</button>
+    <div class="count-label" id="bulkCount">เลือก 0 รายการ</div>
+    <button class="bulk-btn" style="background:var(--color-success); color:white;" onclick="bulkAction('approve')">📤 ส่งแผน</button>
+    <button class="bulk-btn" onclick="bulkAction('paid')">✓ ชำระแล้ว</button>
+    <button class="bulk-btn danger" onclick="bulkAction('cancel')">ยกเลิก</button>
+  </div>
+
+  <div class="main with-bottom-nav">
+
+    <!-- 🆕 v7.5: Tab Panels -->
+
+    <!-- 📤 Tab: ต้องส่ง (default - หน้าแรกที่เข้าแอป) -->
+    <div class="tab-panel active" id="tab-tosend">
+      <div style="padding:14px 12px 8px;">
+        <div style="font-size:17px; font-weight:700; color:var(--text-primary); margin-bottom:2px;">
+          📤 ออเดอร์ที่ต้องส่ง
+        </div>
+        <div style="font-size:12px; color:var(--text-muted);">รายการที่ชำระเงินแล้ว รอส่งแผน</div>
+      </div>
+
+      <div id="toSendSendAllBar" style="display:none; padding:0 12px 8px;">
+        <button onclick="sendAllPaidOrders()" style="
+          width:100%; padding:13px; border:none; border-radius:10px;
+          background:var(--color-success); color:white; font-family:inherit;
+          font-size:14px; font-weight:700; cursor:pointer; box-shadow:var(--shadow-md);">
+          📤 ส่งแผนทั้งหมด (<span id="toSendCountLabel">0</span> ออเดอร์)
+        </button>
+      </div>
+
+      <div id="toSendList" class="orders-list">
+        <div class="loading"><div class="spinner"></div><div>กำลังโหลด...</div></div>
+      </div>
+      <button onclick="loadToSend({force:true})" id="toSendRefreshBtn" style="
+        position:fixed; right:16px; bottom:90px; z-index:80;
+        width:48px; height:48px; border-radius:50%; border:none;
+        background:var(--color-primary); color:white; font-size:20px;
+        box-shadow:var(--shadow-lg); cursor:pointer;">🔄</button>
+    </div>
+
+    <!-- 🛒 Tab: Orders -->
+    <div class="tab-panel" id="tab-orders">
+      <!-- 🆕 v7.7: ช่องค้นหาออเดอร์ -->
+      <div style="padding:10px 12px 6px;">
+        <div style="position:relative;">
+          <input type="text" id="orderSearchInput" placeholder="🔍 ค้นหาชื่อลูกค้า หรือ รหัสออเดอร์..."
+            oninput="onOrderSearch()" autocomplete="off" style="
+            width:100%; padding:11px 38px 11px 14px; border:2px solid var(--border-default);
+            border-radius:10px; background:var(--bg-input); font-family:inherit;
+            font-size:14px; color:var(--text-primary);">
+          <button id="clearSearchBtn" onclick="clearOrderSearch()" style="
+            display:none; position:absolute; right:8px; top:50%; transform:translateY(-50%);
+            border:none; background:var(--bg-elevated); color:var(--text-muted);
+            width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:13px;">✕</button>
+        </div>
+      </div>
+
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="pending">
+          <span class="filter-tab-label">รอชำระเงิน</span>
+          <span class="badge" id="badge-pending">0</span>
+        </button>
+        <button class="filter-tab" data-filter="paid">
+          <span class="filter-tab-label">ชำระแล้ว</span>
+          <span class="badge" id="badge-paid">0</span>
+        </button>
+        <button class="filter-tab" data-filter="completed">
+          <span class="filter-tab-label">ส่งแล้ว</span>
+          <span class="badge" id="badge-completed">0</span>
+        </button>
+        <button class="filter-tab" data-filter="all" id="tabAll">
+          <span class="filter-tab-label">ทั้งหมด</span>
+          <span class="badge" id="badge-all" style="background:#d1d5db;">·</span>
+        </button>
+      </div>
+
+      <div id="bulkSendAllBar" style="display:none; padding:0 12px 8px;">
+        <button onclick="sendAllPaidOrders()" style="
+          width:100%; padding:12px; border:none; border-radius:10px;
+          background:var(--color-success); color:white; font-family:inherit;
+          font-size:14px; font-weight:700; cursor:pointer; box-shadow:var(--shadow-md);">
+          📤 ส่งแผนทั้งหมดที่ชำระแล้ว (<span id="paidCountLabel">0</span> ออเดอร์)
+        </button>
+      </div>
+
+      <div id="ordersList" class="orders-list">
+        <div class="loading"><div class="spinner"></div><div>กำลังโหลด...</div></div>
+      </div>
+      <button onclick="loadOrders({force:true})" id="manualRefreshBtn" style="
+        position:fixed; right:16px; bottom:90px; z-index:80;
+        width:48px; height:48px; border-radius:50%; border:none;
+        background:var(--color-primary); color:white; font-size:20px;
+        box-shadow:var(--shadow-lg); cursor:pointer;">🔄</button>
+    </div>
+
+    <!-- 📊 Tab: Stats (Mini Dashboard + Top 5 ขายดี) -->
+    <div class="tab-panel" id="tab-stats">
+      <div class="mini-dashboard" id="miniDashboard">
+        <div class="mini-stat" id="statToday">
+          <div class="mini-stat-icon">☀️</div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-label">ยอดวันนี้</div>
+            <div class="mini-stat-value">฿0</div>
+            <div class="mini-stat-sub">0 ออเดอร์</div>
+          </div>
+        </div>
+        <div class="mini-stat" id="statMonth">
+          <div class="mini-stat-icon">🗓️</div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-label">ยอดเดือนนี้</div>
+            <div class="mini-stat-value">฿0</div>
+            <div class="mini-stat-sub">0 ออเดอร์</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🆕 v7.7: กราฟยอดขาย 7 วัน -->
+      <div class="top-subjects-card" style="margin-top:14px;">
+        <div class="top-subjects-header">
+          <div class="top-subjects-title">📊 ยอดขาย 7 วันล่าสุด</div>
+          <button class="top-refresh-btn" onclick="loadSales7Days(true)" title="รีเฟรช">🔄</button>
+        </div>
+        <div id="sales7Chart" style="padding:8px 0;">
+          <div style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">
+            กำลังโหลด...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📅 Tab: Calendar (Feature C) -->
+    <!-- 👥 Tab: Customers (พร้อม Dropdown + ประวัติ) -->
+    <div class="tab-panel" id="tab-customers">
+      <div class="customers-header-card">
+        <div class="customers-title">👥 ลูกค้าทั้งหมด</div>
+        <div class="customers-count" id="customersCount">กำลังโหลด...</div>
+        <select id="customerSelect" class="customer-dropdown" onchange="onCustomerSelected()">
+          <option value="">— เลือกลูกค้า —</option>
+        </select>
+        <button class="top-refresh-btn" onclick="loadCustomerList()" title="รีเฟรชรายชื่อ" style="margin-top:8px;">🔄 รีเฟรชรายชื่อ</button>
+      </div>
+
+      <div id="customerDetail" class="customer-detail-area">
+        <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+          เลือกลูกค้าจาก dropdown ด้านบนเพื่อดูประวัติการสั่งซื้อ
+        </div>
+      </div>
+    </div>
+
+    <!-- ⚙️ Tab: Settings -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="settings-section">
+        <h3>การส่งงาน</h3>
+        <div class="sound-settings">
+          <!-- 🆕 v7.6: Auto-Approve Toggle -->
+          <div class="sound-row">
+            <div style="flex:1;">
+              <div class="label">🤖 ส่งงานอัตโนมัติ</div>
+              <div class="desc" id="autoApproveDesc">เมื่อลูกค้าส่งสลิป → ระบบส่งแผนให้ทันที</div>
+            </div>
+            <button class="toggle-switch" id="autoApproveToggle" onclick="toggleAutoApprove()"></button>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); padding:10px 12px; background:var(--bg-elevated); border-radius:8px; line-height:1.6; margin-top:4px;">
+            ⚠️ <b>เปิด</b> = ลูกค้าส่งสลิป → ส่งแผนทันที (เหมาะกับช่วงที่ไม่ว่างตรวจ)<br>
+            🔒 <b>ปิด</b> = ตรวจสลิปเองก่อน แล้วกดส่งแผนเอง (ปลอดภัยกว่า — แนะนำ)
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>การแจ้งเตือน</h3>
+        <div class="sound-settings">
+          <!-- 🆕 Feature B: Sound Alert -->
+          <div class="sound-row">
+            <div>
+              <div class="label">🔊 เสียงเตือนออเดอร์ใหม่</div>
+              <div class="desc">เมื่อแอปเปิดอยู่และมีออเดอร์เข้ามา</div>
+            </div>
+            <button class="toggle-switch" id="soundToggle" onclick="toggleSound()"></button>
+          </div>
+          <div class="sound-row" style="flex-direction:column; align-items:stretch;">
+            <div style="margin-bottom:4px;">
+              <div class="label">เลือกเสียง</div>
+              <div class="desc">กดเพื่อทดสอบเสียง</div>
+            </div>
+            <div class="sound-picker">
+              <button data-sound="bell" onclick="pickSound('bell')">🔔 กระดิ่ง</button>
+              <button data-sound="coin" onclick="pickSound('coin')">💰 เงิน</button>
+              <button data-sound="chime" onclick="pickSound('chime')">🎵 ทำนอง</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>การแสดงผล</h3>
+        <div class="sound-settings">
+          <div class="sound-row">
+            <div>
+              <div class="label">🌙 โหมดสีมืด</div>
+              <div class="desc">ลดแสงตอนใช้งานกลางคืน</div>
+            </div>
+            <button class="toggle-switch" id="darkToggle" onclick="toggleTheme()"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>ปฏิทินยอดขาย</h3>
+        <div class="sound-settings">
+          <div class="sound-row" style="cursor:pointer;" onclick="toggleCalendarPanel()">
+            <div>
+              <div class="label">📅 ดูปฏิทินยอดขาย</div>
+              <div class="desc">ยอดขายรายวัน ดูย้อนหลังได้ทุกเดือน</div>
+            </div>
+            <div id="calPanelArrow" style="color:var(--text-muted); font-size:18px;">›</div>
+          </div>
+        </div>
+        <div id="calendarPanel" style="display:none; margin-top:12px;">
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+              <div class="calendar-title" id="calendarTitle">เดือน</div>
+              <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-summary">
+              <div>
+                <div class="label">ยอดเดือนนี้</div>
+                <div class="value" id="calMonthAmount">฿0</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="label">จำนวนออเดอร์</div>
+                <div class="value" id="calMonthCount">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="calendar-day-orders" id="calendarDayOrders">
+            <div class="empty-msg">📅 เลือกวันที่บนปฏิทินเพื่อดูยอดของวันนั้น</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>จัดการสินค้า</h3>
+        <div class="sound-settings">
+          <div class="sound-row" style="cursor:pointer;" onclick="openProductApp()">
+            <div>
+              <div class="label">📦 จัดการสินค้า / ราคา</div>
+              <div class="desc">เปิดแอปจัดการสินค้า (อีกหน้าต่าง)</div>
+            </div>
+            <div style="color:var(--text-muted); font-size:18px;">↗</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>เกี่ยวกับ</h3>
+        <div class="sound-settings">
+          <div class="sound-row">
+            <div>
+              <div class="label">📱 เวอร์ชัน</div>
+              <div class="desc">ครูพร้อมสอน Admin PWA</div>
+            </div>
+            <div style="color:var(--text-muted); font-size:13px;">v7.5</div>
+          </div>
+          <div class="sound-row">
+            <div>
+              <div class="label">🗑️ ล้าง Cache</div>
+              <div class="desc">รีเซ็ตข้อมูลที่บันทึกในเครื่อง</div>
+            </div>
+            <button class="bulk-btn" style="background:var(--color-danger); color:white; border:none; padding:8px 14px; border-radius:8px; font-weight:600; cursor:pointer;" onclick="clearAppCache()">ล้าง</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🆕 v7.5: Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" data-tab="tosend" onclick="switchTab('tosend')">
+      <span class="icon">📤</span>
+      <span class="label">ต้องส่ง</span>
+      <span class="nav-badge hidden" id="navBadgeToSend">0</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="orders" onclick="switchTab('orders')">
+      <span class="icon">🛒</span>
+      <span class="label">ออเดอร์</span>
+      <span class="nav-badge hidden" id="navBadgeOrders">0</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="stats" onclick="switchTab('stats')">
+      <span class="icon">📊</span>
+      <span class="label">สรุปยอด</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="customers" onclick="switchTab('customers')">
+      <span class="icon">👥</span>
+      <span class="label">ลูกค้า</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="settings" onclick="switchTab('settings')">
+      <span class="icon">⚙️</span>
+      <span class="label">ตั้งค่า</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ============ Detail Page ============ -->
+<div id="detailPage" class="detail-page">
+  <div class="detail-header">
+    <button class="btn-back" onclick="closeDetail()">←</button>
+    <div class="detail-header-title" id="detailTitle">รายละเอียด</div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+  <div class="detail-action-bar" id="detailActionBar"></div>
+</div>
+
+<!-- ============ Status Modal ============ -->
+<div id="statusModal" class="modal-overlay" onclick="closeStatusModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">เปลี่ยนสถานะออเดอร์</div>
+    <div class="modal-actions">
+      <button class="modal-action-btn paid" onclick="updateStatus('ชำระเงินแล้ว')">
+        <span class="icon">💵</span><span>ชำระเงินแล้ว (ตรวจสลิปแล้ว)</span>
+      </button>
+      <button class="modal-action-btn cancelled" onclick="updateStatus('ยกเลิก')">
+        <span class="icon">❌</span><span>ยกเลิกคำสั่งซื้อ</span>
+      </button>
+      <button class="modal-action-btn cancel" onclick="closeStatusModal()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div id="toast" class="toast"></div>
+
+<!-- ============ Slip Fullscreen Viewer ============ -->
+<div id="slipFullscreen" class="slip-fullscreen" onclick="closeSlipFullscreen()">
+  <button class="slip-fullscreen-close" onclick="closeSlipFullscreen()">✕</button>
+  <img id="slipFullscreenImg" src="" alt="สลิป">
+</div>
+
+<script>
+// ============ State ============
+let currentToken = localStorage.getItem('admin_token') || null;
+let currentUser = localStorage.getItem('admin_user') || null;
+let currentRole = localStorage.getItem('admin_role') || 'owner';  // 🆕 owner | staff
+let currentFilter = 'pending';
+let currentOrder = null;
+let allOrders = [];
+let lastMiniStats = null; // 🆕 v7
+let autoRefreshInterval = null;
+let lastOrdersHash = '';
+
+// ============ 🆕 v7.5: PWA State ============
+let pwaState = {
+  installPromptEvent: null,
+  isInstalled: false,
+  currentTab: 'tosend',  // 🆕 v7.7: เริ่มต้นที่หน้า "ต้องส่ง"
+  // Theme
+  theme: localStorage.getItem('kp_theme') || 'light',
+  // Sound
+  soundEnabled: localStorage.getItem('kp_sound_enabled') === 'true',
+  soundType: localStorage.getItem('kp_sound_type') || 'bell',
+  lastOrderCount: parseInt(localStorage.getItem('kp_last_order_count') || '0'),
+  // Calendar
+  calMonth: new Date().getMonth(),
+  calYear: new Date().getFullYear(),
+  calSelectedDate: null,
+  // Bulk
+  bulkMode: false,
+  bulkSelected: new Set(),
+  // 🆕 v7.5: Customers
+  customers: [],
+  customersLoaded: false
+};
+
+// ============ 🆕 v7.5: PWA - Service Worker ============
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.warn('❌ SW failed:', err));
+  });
+}
+
+// PWA Install Prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  pwaState.installPromptEvent = e;
+  // แสดง banner ถ้ายังไม่เคยปิด
+  if (!localStorage.getItem('kp_install_dismissed') &&
+      !window.matchMedia('(display-mode: standalone)').matches) {
+    setTimeout(() => {
+      const banner = document.getElementById('installBanner');
+      if (banner) banner.classList.add('show');
+    }, 3000);
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  pwaState.isInstalled = true;
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.classList.remove('show');
+  console.log('✅ PWA installed');
+});
+
+function installPWA() {
+  if (!pwaState.installPromptEvent) {
+    alert('ลองใช้เมนูเบราว์เซอร์ → "เพิ่มลงในหน้าจอหลัก" แทน');
+    return;
+  }
+  pwaState.installPromptEvent.prompt();
+  pwaState.installPromptEvent.userChoice.then(result => {
+    if (result.outcome === 'accepted') {
+      console.log('✅ User accepted install');
+    }
+    pwaState.installPromptEvent = null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+
+function dismissInstall() {
+  localStorage.setItem('kp_install_dismissed', '1');
+  document.getElementById('installBanner').classList.remove('show');
+}
+
+// 🆕 v7.7: เปิดแอปจัดการสินค้า (แอปแยก — product.html)
+function openProductApp() {
+  // URL ของแอปจัดการสินค้า — แก้ตรงนี้ถ้าเปลี่ยน path
+  const productUrl = localStorage.getItem('kp_product_url') ||
+    'https://kruprompt27.github.io/product/';
+  window.open(productUrl, '_blank');
+}
+
+function clearAppCache() {
+  if (!confirm('ล้าง cache ทั้งหมด? แอปจะรีโหลด')) return;
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => location.reload();
+    navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' }, [channel.port2]);
+  } else {
+    location.reload();
+  }
+}
+
+// ============ 🆕 v7.5: Tab Switching ============
+function switchTab(tabName) {
+  // อัปเดต UI
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tabName);
+  const btn = document.querySelector(`.bottom-nav-item[data-tab="${tabName}"]`);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  pwaState.currentTab = tabName;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // 🆕 v7.7: ปุ่มรีเฟรชแสดงเฉพาะแท็บ orders / tosend
+  const refBtn = document.getElementById('manualRefreshBtn');
+  if (refBtn) refBtn.style.display = (tabName === 'orders') ? 'block' : 'none';
+  const toSendRefBtn = document.getElementById('toSendRefreshBtn');
+  if (toSendRefBtn) toSendRefBtn.style.display = (tabName === 'tosend') ? 'block' : 'none';
+
+  // Lazy load tab content
+  if (tabName === 'tosend') loadToSend();
+  if (tabName === 'stats') loadSales7Days();
+  if (tabName === 'customers') {
+    if (!pwaState.customersLoaded) loadCustomerList();
+  }
+  if (tabName === 'settings') loadAutoApproveStatus();
+  if (tabName === 'orders') {
+    if (allOrders.length > 0) renderOrders();
+    else loadOrders();
+  }
+}
+
+// 🆕 v7.7: เปิด/ปิด ปฏิทินใน settings
+function toggleCalendarPanel() {
+  const panel = document.getElementById('calendarPanel');
+  const arrow = document.getElementById('calPanelArrow');
+  if (!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  if (isOpen) {
+    panel.style.display = 'none';
+    if (arrow) arrow.textContent = '›';
+  } else {
+    panel.style.display = 'block';
+    if (arrow) arrow.textContent = '⌄';
+    renderCalendar();
+  }
+}
+
+// 🆕 v7.7: โหลดออเดอร์ที่ต้องส่ง (ชำระแล้ว/รอส่ง)
+let _toSendOrders = [];
+let _toSendLoading = false;
+
+function loadToSend(opts) {
+  opts = opts || {};
+  const listEl = document.getElementById('toSendList');
+  if (_toSendLoading && !opts.force) return;
+
+  if (_toSendOrders.length > 0) {
+    renderToSend();
+  } else {
+    listEl.innerHTML = '<div class="loading"><div class="spinner"></div><div>กำลังโหลด...</div></div>';
+  }
+  _toSendLoading = true;
+
+  callApi('listOrders', { filter: 'paid' })
+    .then(res => {
+      _toSendLoading = false;
+      if (!res.success) {
+        if (res.error === 'unauthorized') { doLogout(); return; }
+        if (_toSendOrders.length === 0) {
+          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">⚠️</div><div>' + (res.error || 'โหลดไม่สำเร็จ') + '</div></div>';
+        }
+        return;
+      }
+      _toSendOrders = res.orders || [];
+      renderToSend();
+      // อัปเดต badge ที่ bottom nav
+      const navBadge = document.getElementById('navBadgeToSend');
+      if (navBadge) {
+        if (_toSendOrders.length > 0) {
+          navBadge.textContent = _toSendOrders.length > 99 ? '99+' : _toSendOrders.length;
+          navBadge.classList.remove('hidden');
+        } else {
+          navBadge.classList.add('hidden');
+        }
+      }
+    })
+    .catch(err => {
+      _toSendLoading = false;
+      if (_toSendOrders.length === 0) {
+        listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">⚠️</div><div>ผิดพลาด: ' + err.message + '</div></div>';
+      }
+    });
+}
+
+function renderToSend() {
+  const listEl = document.getElementById('toSendList');
+  const bar = document.getElementById('toSendSendAllBar');
+
+  if (_toSendOrders.length === 0) {
+    if (bar) bar.style.display = 'none';
+    listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">🎉</div><div class="empty-state-text">ไม่มีออเดอร์ที่ต้องส่ง<br><span style="font-size:12px; color:var(--text-muted);">ส่งครบหมดแล้ว!</span></div></div>';
+    return;
+  }
+
+  // ปุ่มส่งทั้งหมด
+  if (bar) {
+    bar.style.display = 'block';
+    const lbl = document.getElementById('toSendCountLabel');
+    if (lbl) lbl.textContent = _toSendOrders.length;
+  }
+
+  listEl.innerHTML = _toSendOrders.map(o => {
+    const ts = formatDate(o.timestamp);
+    return `
+      <div class="order-card paid" data-order-id="${escapeHtml(o.orderId)}" onclick="handleToSendClick(event, ${o.row}, '${escapeHtml(o.orderId)}')">
+        <div class="order-card-header">
+          <span class="order-card-id">${escapeHtml(o.orderId)}</span>
+          <span class="order-card-status paid">${escapeHtml(o.status)}</span>
+        </div>
+        <div class="order-card-customer">${escapeHtml(o.customerFb || '-')}</div>
+        <div class="order-card-meta">
+          <span>${ts} • ${o.itemCount || 0} รายการ</span>
+          <span class="order-card-amount">฿${formatNumber(o.netTotal)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // attach long-press สำหรับ bulk
+  listEl.querySelectorAll('.order-card').forEach(card => {
+    attachBulkLongPress(card, card.dataset.orderId);
+    if (pwaState.bulkMode) {
+      card.classList.add('bulk-mode');
+      if (pwaState.bulkSelected.has(card.dataset.orderId)) card.classList.add('selected');
+    }
+  });
+}
+
+function handleToSendClick(e, row, orderId) {
+  if (pwaState.bulkMode) {
+    e.stopPropagation();
+    toggleBulkSelect(orderId, e.currentTarget);
+    return;
+  }
+  openDetail(row);
+}
+
+// ============ 🆕 v7.5: Top 5 Subjects (Stats Tab) ============
+// ============ 🆕 v7.7: กราฟยอดขาย 7 วัน ============
+let _sales7Cache = null;
+let _sales7Time = 0;
+
+async function loadSales7Days(force) {
+  const el = document.getElementById('sales7Chart');
+  if (!el) return;
+
+  // cache 2 นาที
+  if (!force && _sales7Cache && (Date.now() - _sales7Time) < 120000) {
+    drawSales7(_sales7Cache);
+    return;
+  }
+
+  el.innerHTML = '<div style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">⏳ กำลังโหลด...</div>';
+  try {
+    const res = await callApi('getSales7Days', {});
+    if (!res.success) {
+      el.innerHTML = '<div style="text-align:center; padding:20px; color:var(--color-danger); font-size:13px;">❌ โหลดไม่สำเร็จ</div>';
+      return;
+    }
+    _sales7Cache = res.days || [];
+    _sales7Time = Date.now();
+    drawSales7(_sales7Cache);
+  } catch (e) {
+    el.innerHTML = '<div style="text-align:center; padding:20px; color:var(--color-danger); font-size:13px;">❌ ' + e.message + '</div>';
+  }
+}
+
+function drawSales7(days) {
+  const el = document.getElementById('sales7Chart');
+  if (!el) return;
+  if (!days || days.length === 0) {
+    el.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">📭 ไม่มีข้อมูล</div>';
+    return;
+  }
+
+  const maxTotal = Math.max.apply(null, days.map(d => d.total));
+  const safeMax = maxTotal > 0 ? maxTotal : 1;
+  const todayIdx = days.length - 1;
+
+  // กราฟแท่งแนวตั้ง (CSS bars)
+  let bars = '';
+  days.forEach((d, i) => {
+    const heightPct = Math.max(4, Math.round((d.total / safeMax) * 100));
+    const isToday = (i === todayIdx);
+    const barColor = isToday ? 'var(--color-primary)' : 'var(--color-accent)';
+    const amountShort = d.total >= 1000 ? (d.total/1000).toFixed(1) + 'K' : Math.round(d.total);
+    bars += `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <div style="font-size:9px; font-weight:700; color:var(--text-secondary);">${d.total > 0 ? '฿' + amountShort : ''}</div>
+        <div style="width:100%; display:flex; align-items:flex-end; height:120px;">
+          <div title="฿${formatNum(d.total)} • ${d.count} ออเดอร์" style="
+            width:100%; height:${heightPct}%; background:${barColor};
+            border-radius:6px 6px 0 0; transition:height 0.4s;
+            min-height:4px;"></div>
+        </div>
+        <div style="font-size:10px; color:${isToday ? 'var(--color-primary)' : 'var(--text-muted)'}; font-weight:${isToday ? '700' : '500'};">${d.date}</div>
+        <div style="font-size:9px; color:var(--text-faint);">${d.count}</div>
+      </div>
+    `;
+  });
+
+  const total7 = days.reduce((s, d) => s + d.total, 0);
+  const count7 = days.reduce((s, d) => s + d.count, 0);
+
+  el.innerHTML = `
+    <div style="display:flex; gap:6px; padding:0 4px;">${bars}</div>
+    <div style="display:flex; justify-content:space-around; margin-top:14px; padding-top:12px; border-top:1px solid var(--border-default);">
+      <div style="text-align:center;">
+        <div style="font-size:11px; color:var(--text-secondary);">รวม 7 วัน</div>
+        <div style="font-size:16px; font-weight:700; color:var(--color-primary-dark);">฿${formatNum(total7)}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px; color:var(--text-secondary);">ออเดอร์</div>
+        <div style="font-size:16px; font-weight:700; color:var(--text-primary);">${count7}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px; color:var(--text-secondary);">เฉลี่ย/วัน</div>
+        <div style="font-size:16px; font-weight:700; color:var(--text-primary);">฿${formatNum(Math.round(total7/7))}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ 🆕 v7.5: Customer List & History ============
+async function loadCustomerList() {
+  const sel = document.getElementById('customerSelect');
+  const countEl = document.getElementById('customersCount');
+  if (!sel) return;
+
+  sel.innerHTML = '<option value="">⏳ กำลังโหลด...</option>';
+  countEl.textContent = 'กำลังโหลด...';
+
+  try {
+    const res = await callApi('listCustomers', {});
+    if (!res.success) {
+      sel.innerHTML = '<option value="">❌ โหลดไม่สำเร็จ</option>';
+      countEl.textContent = res.error || 'Error';
+      return;
+    }
+    pwaState.customers = res.customers || [];
+    pwaState.customersLoaded = true;
+
+    countEl.textContent = `ทั้งหมด ${pwaState.customers.length} คน`;
+    sel.innerHTML = '<option value="">— เลือกลูกค้า —</option>' +
+      pwaState.customers.map(c =>
+        `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${c.orderCount} ออเดอร์ • ฿${formatNum(c.totalAmount)})</option>`
+      ).join('');
+  } catch (e) {
+    sel.innerHTML = '<option value="">❌ Error</option>';
+    countEl.textContent = e.message;
+  }
+}
+
+async function onCustomerSelected() {
+  const sel = document.getElementById('customerSelect');
+  const detail = document.getElementById('customerDetail');
+  const name = sel.value;
+
+  if (!name) {
+    detail.innerHTML = '<div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">เลือกลูกค้าจาก dropdown ด้านบนเพื่อดูประวัติการสั่งซื้อ</div>';
+    return;
+  }
+
+  detail.innerHTML = '<div style="text-align:center; padding:24px; color:var(--text-muted);">⏳ กำลังโหลดประวัติ...</div>';
+
+  try {
+    const res = await callApi('getCustomerHistory', { customerName: name });
+    if (!res.success) {
+      detail.innerHTML = '<div style="text-align:center; padding:24px; color:var(--color-danger);">❌ ' + (res.error || 'โหลดไม่สำเร็จ') + '</div>';
+      return;
+    }
+
+    const summary = res.summary || {};
+    const history = res.history || [];
+
+    let html = `
+      <div class="customer-summary-card">
+        <div class="customer-summary-name">${escapeHtml(summary.customerName || name)}</div>
+        <div class="customer-summary-row">
+          <span class="label">📦 จำนวนออเดอร์</span>
+          <span class="value">${summary.totalOrders || 0} ครั้ง</span>
+        </div>
+        <div class="customer-summary-row">
+          <span class="label">💰 ยอดรวมทั้งหมด</span>
+          <span class="value">฿${formatNum(summary.totalAmount || 0)}</span>
+        </div>
+      </div>
+    `;
+
+    if (history.length === 0) {
+      html += '<div style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">📭 ไม่มีประวัติการสั่งซื้อ</div>';
+    } else {
+      html += '<div style="font-size:13px; font-weight:700; color:var(--text-secondary); margin:14px 4px 8px;">📜 ประวัติการสั่งซื้อ (' + history.length + ' รายการ)</div>';
+      history.forEach(h => {
+        const itemsPreview = (h.items || '').split('\n').slice(0, 5).join('\n');
+        const moreCount = (h.items || '').split('\n').length - 5;
+        const statusClass = getHistoryStatusClass(h.status);
+        html += `
+          <div class="history-order-card">
+            <div class="head">
+              <span class="order-id">${escapeHtml(h.orderId)}</span>
+              <span class="order-date">${escapeHtml(h.timestamp)}</span>
+            </div>
+            <div class="items-preview">${escapeHtml(itemsPreview)}${moreCount > 0 ? '\n... และอีก ' + moreCount + ' รายการ' : ''}</div>
+            <div class="foot">
+              <span class="status-tag ${statusClass}">${escapeHtml(h.status || '-')}</span>
+              <span class="amount">฿${formatNum(h.netTotal)}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    detail.innerHTML = html;
+  } catch (e) {
+    detail.innerHTML = '<div style="text-align:center; padding:24px; color:var(--color-danger);">❌ ' + e.message + '</div>';
+  }
+}
+
+function getHistoryStatusClass(status) {
+  const s = String(status || '').trim();
+  if (s === 'ส่งแผนเสร็จสิ้น' || s === 'ส่งแล้ว') return 'status-completed';
+  if (s === 'อนุมัติส่งแผน') return 'status-paid';
+  if (s === 'ชำระเงินแล้ว' || s === 'ชำระแล้ว') return 'status-paid';
+  if (s === 'รอชำระเงิน') return 'status-pending';
+  if (s === 'ยกเลิก') return 'status-cancelled';
+  return 'status-pending';
+}
+
+// ============ 🆕 v7.6: Auto-Approve Toggle ============
+let autoApproveState = false;
+
+async function loadAutoApproveStatus() {
+  try {
+    const res = await callApi('getAutoApprove', {});
+    if (res.success) {
+      autoApproveState = res.autoApprove === true;
+      updateAutoApproveUI();
+    }
+  } catch (e) {
+    console.warn('loadAutoApproveStatus failed:', e);
+  }
+}
+
+function updateAutoApproveUI() {
+  const toggle = document.getElementById('autoApproveToggle');
+  const desc = document.getElementById('autoApproveDesc');
+  if (toggle) toggle.classList.toggle('on', autoApproveState);
+  if (desc) {
+    desc.textContent = autoApproveState
+      ? '✅ เปิดอยู่ — สลิปเข้า → ส่งแผนทันที'
+      : '🔒 ปิดอยู่ — ตรวจสลิปเอง แล้วกดส่งแผนเอง';
+  }
+}
+
+async function toggleAutoApprove() {
+  const newState = !autoApproveState;
+
+  // ยืนยันก่อนเปิด (เพราะมีความเสี่ยง)
+  if (newState) {
+    if (!confirm('⚠️ เปิด "ส่งงานอัตโนมัติ"?\n\nเมื่อลูกค้าส่งสลิป ระบบจะส่งแผนให้ทันทีโดยไม่ตรวจสลิปก่อน\n\nแนะนำให้ใช้เฉพาะช่วงที่ไม่สะดวกตรวจเอง')) {
+      return;
+    }
+  }
+
+  const toggle = document.getElementById('autoApproveToggle');
+  if (toggle) toggle.style.opacity = '0.5';
+
+  try {
+    const res = await callApi('setAutoApprove', { enabled: newState ? 'true' : 'false' });
+    if (res && res.success) {
+      autoApproveState = res.autoApprove === true;
+      updateAutoApproveUI();
+      if (autoApproveState && pwaState.soundEnabled) playSoundEffect('preview');
+      showToast(autoApproveState ? '✅ เปิดส่งงานอัตโนมัติแล้ว' : '🔒 ปิดส่งงานอัตโนมัติแล้ว', 'success');
+    } else {
+      alert('❌ บันทึกไม่สำเร็จ: ' + (res && res.error ? res.error : 'ไม่ทราบสาเหตุ'));
+      // คืนสภาพ toggle ตามค่าเดิม
+      updateAutoApproveUI();
+    }
+  } catch (e) {
+    alert('❌ Error: ' + e.message);
+    updateAutoApproveUI();
+  } finally {
+    if (toggle) toggle.style.opacity = '1';
+  }
+}
+
+// ============ 🆕 v7.5: Theme (Dark Mode) ============
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  pwaState.theme = theme;
+  localStorage.setItem('kp_theme', theme);
+  const btn = document.getElementById('themeToggleBtn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  const toggle = document.getElementById('darkToggle');
+  if (toggle) toggle.classList.toggle('on', theme === 'dark');
+  // อัปเดต theme-color meta
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#1e293b' : '#818cf8');
+}
+
+function toggleTheme() {
+  applyTheme(pwaState.theme === 'dark' ? 'light' : 'dark');
+}
+
+// ============ 🆕 v7.5: Sound Alert (Feature B) ============
+// 🔊 AudioContext ต้อง init หลัง user interaction (browser autoplay policy)
+let _audioCtx = null;
+let _audioUnlocked = false;
+
+function unlockAudio() {
+  if (_audioUnlocked) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!_audioCtx) _audioCtx = new AC();
+    // resume context (จำเป็นบน iOS/บางครั้ง Android)
+    if (_audioCtx.state === 'suspended') {
+      _audioCtx.resume();
+    }
+    // เล่นเสียงเงียบเพื่อ unlock
+    const buffer = _audioCtx.createBuffer(1, 1, 22050);
+    const source = _audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(_audioCtx.destination);
+    source.start(0);
+    _audioUnlocked = true;
+    console.log('🔓 Audio unlocked');
+  } catch (e) {
+    console.warn('Audio unlock failed:', e);
+  }
+}
+
+// Unlock เมื่อ user tap ที่ใดก็ตามครั้งแรก
+document.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+document.addEventListener('click', unlockAudio, { once: true });
+document.addEventListener('keydown', unlockAudio, { once: true });
+
+function playSoundEffect(type) {
+  if (!pwaState.soundEnabled && type !== 'preview') return;
+
+  try {
+    // Ensure audio is unlocked
+    unlockAudio();
+    if (!_audioCtx) {
+      console.warn('AudioContext not available');
+      return;
+    }
+    const ctx = _audioCtx;
+    // Resume ถ้าถูก suspend
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const soundType = pwaState.soundType;
+
+    if (soundType === 'bell') {
+      // กระดิ่ง: 2 โน้ตสั้นๆ
+      [880, 1100].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + i * 0.15 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + i * 0.15);
+        osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+      });
+    } else if (soundType === 'coin') {
+      // เสียงเงิน: คล้ายเหรียญร่วง
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(1400, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 0.15);
+      osc.type = 'triangle';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+      // โน้ตที่ 2
+      setTimeout(() => {
+        try {
+          const o2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          o2.frequency.setValueAtTime(1800, ctx.currentTime);
+          o2.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.15);
+          o2.type = 'triangle';
+          g2.gain.setValueAtTime(0.2, ctx.currentTime);
+          g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          o2.connect(g2); g2.connect(ctx.destination);
+          o2.start(); o2.stop(ctx.currentTime + 0.3);
+        } catch(e) {}
+      }, 80);
+    } else if (soundType === 'chime') {
+      // ทำนอง: 3 โน้ตเรียง (C-E-G)
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + i * 0.12 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.5);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.5);
+      });
+    }
+    console.log('🔊 Played sound:', soundType);
+  } catch (e) {
+    console.warn('Sound playback failed:', e);
+  }
+}
+
+function toggleSound() {
+  pwaState.soundEnabled = !pwaState.soundEnabled;
+  localStorage.setItem('kp_sound_enabled', pwaState.soundEnabled);
+  const toggle = document.getElementById('soundToggle');
+  if (toggle) toggle.classList.toggle('on', pwaState.soundEnabled);
+  if (pwaState.soundEnabled) playSoundEffect('preview');
+}
+
+function pickSound(type) {
+  pwaState.soundType = type;
+  localStorage.setItem('kp_sound_type', type);
+  document.querySelectorAll('.sound-picker button').forEach(b => {
+    b.classList.toggle('active', b.dataset.sound === type);
+  });
+  // เล่นเสียงทดสอบ (ไม่สนใจว่าจะเปิด/ปิด)
+  const oldEnabled = pwaState.soundEnabled;
+  pwaState.soundEnabled = true;
+  playSoundEffect('preview');
+  pwaState.soundEnabled = oldEnabled;
+}
+
+// ตรวจสอบออเดอร์ใหม่และเล่นเสียง
+function checkNewOrdersForSound(newOrders) {
+  if (!pwaState.soundEnabled) return;
+  const currentCount = newOrders.filter(o => o.status === 'รอชำระเงิน' || o.status === 'ชำระเงินแล้ว').length;
+  if (currentCount > pwaState.lastOrderCount && pwaState.lastOrderCount > 0) {
+    playSoundEffect('alert');
+  }
+  pwaState.lastOrderCount = currentCount;
+  localStorage.setItem('kp_last_order_count', currentCount);
+}
+
+// ============ 🆕 v7.5: Calendar View (Feature C) ============
+function changeMonth(delta) {
+  pwaState.calMonth += delta;
+  if (pwaState.calMonth < 0) { pwaState.calMonth = 11; pwaState.calYear--; }
+  if (pwaState.calMonth > 11) { pwaState.calMonth = 0; pwaState.calYear++; }
+  pwaState.calSelectedDate = null;
+  renderCalendar();
+}
+
+// 🆕 v7.7: cache ข้อมูลปฏิทินต่อเดือน (key = "year-month")
+if (!pwaState.calCache) pwaState.calCache = {};
+
+async function renderCalendar() {
+  const year = pwaState.calYear;
+  const month = pwaState.calMonth;
+  const cacheKey = year + '-' + month;
+
+  // ถ้ามี cache แล้ว → วาดเลย
+  if (pwaState.calCache[cacheKey]) {
+    drawCalendar(pwaState.calCache[cacheKey]);
+    return;
+  }
+
+  // ยังไม่มี → แสดง loading state ในกริด แล้วโหลดจาก API
+  const grid = document.getElementById('calendarGrid');
+  const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                      'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year + 543}`;
+  if (grid) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:var(--text-muted);">⏳ กำลังโหลด...</div>';
+
+  try {
+    const res = await callApi('getCalendarMonth', { year: year, month: month });
+    if (res.success) {
+      const monthData = {
+        days: res.days || {},
+        monthTotal: res.monthTotal || 0,
+        monthCount: res.monthCount || 0,
+        year: year, month: month
+      };
+      pwaState.calCache[cacheKey] = monthData;
+      drawCalendar(monthData);
+    } else {
+      if (grid) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--color-danger);">❌ โหลดไม่สำเร็จ</div>';
+    }
+  } catch (e) {
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--color-danger);">❌ ' + e.message + '</div>';
+  }
+}
+
+function drawCalendar(monthData) {
+  const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                      'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const dayNames = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const year = monthData.year;
+  const month = monthData.month;
+  const ordersByDate = monthData.days || {};
+
+  document.getElementById('calendarTitle').textContent =
+    `${monthNames[month]} ${year + 543}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const amounts = Object.keys(ordersByDate).map(k => ordersByDate[k].amount);
+  const maxAmount = amounts.length > 0 ? Math.max.apply(null, amounts) : 0;
+
+  const grid = document.getElementById('calendarGrid');
+  let html = '';
+  dayNames.forEach((name, i) => {
+    html += `<div class="calendar-day-name ${i === 0 ? 'sun' : ''}">${name}</div>`;
+  });
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day empty"></div>';
+  }
+  const today = new Date();
+  const isThisMonth = today.getFullYear() === year && today.getMonth() === month;
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayData = ordersByDate[day];
+    let heatClass = '';
+    if (dayData && maxAmount > 0) {
+      const ratio = dayData.amount / maxAmount;
+      if (ratio > 0.66) heatClass = 'heat-high';
+      else if (ratio > 0.33) heatClass = 'heat-mid';
+      else heatClass = 'heat-low';
+    }
+    const isToday = isThisMonth && day === today.getDate();
+    const isSelected = pwaState.calSelectedDate === day;
+    const amountText = dayData ? `฿${formatShortNum(dayData.amount)}` : '';
+    html += `
+      <div class="calendar-day ${heatClass} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
+           onclick="selectCalDay(${day})">
+        <div class="day-num">${day}</div>
+        ${amountText ? `<div class="day-amount">${amountText}</div>` : ''}
+      </div>
+    `;
+  }
+  grid.innerHTML = html;
+
+  document.getElementById('calMonthAmount').textContent = '฿' + formatNum(monthData.monthTotal);
+  document.getElementById('calMonthCount').textContent = monthData.monthCount;
+
+  if (pwaState.calSelectedDate) {
+    showCalendarDayOrders(pwaState.calSelectedDate, ordersByDate);
+  }
+}
+
+function selectCalDay(day) {
+  pwaState.calSelectedDate = day;
+  const cacheKey = pwaState.calYear + '-' + pwaState.calMonth;
+  if (pwaState.calCache[cacheKey]) drawCalendar(pwaState.calCache[cacheKey]);
+}
+
+function showCalendarDayOrders(day, ordersByDate) {
+  const container = document.getElementById('calendarDayOrders');
+  const dayData = ordersByDate[day];
+  const dateStr = `${day}/${pwaState.calMonth + 1}/${pwaState.calYear + 543}`;
+  if (!dayData || dayData.count === 0) {
+    container.innerHTML = `<div class="empty-msg">📭 ไม่มีออเดอร์ในวันที่ ${dateStr}</div>`;
+    return;
+  }
+  // 🆕 v7.7: API ส่งแค่ count+amount (ไม่ส่ง orders[] เพื่อความเร็ว)
+  // แสดงสรุปยอดของวันนั้น
+  container.innerHTML = `
+    <div style="text-align:center; padding:18px; background:var(--gradient-card-2); border-radius:12px;">
+      <div style="font-weight:700; font-size:15px; color:var(--color-primary-dark); margin-bottom:6px;">
+        📅 ${dateStr}
+      </div>
+      <div style="display:flex; justify-content:space-around; margin-top:10px;">
+        <div>
+          <div style="font-size:12px; color:var(--text-secondary);">จำนวนออเดอร์</div>
+          <div style="font-size:20px; font-weight:700; color:var(--text-primary);">${dayData.count}</div>
+        </div>
+        <div>
+          <div style="font-size:12px; color:var(--text-secondary);">ยอดรวม</div>
+          <div style="font-size:20px; font-weight:700; color:var(--color-primary-dark);">฿${formatNum(dayData.amount)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function viewOrderFromCal(orderId) {
+  const order = allOrders.find(o => o.orderId === orderId);
+  if (order && typeof openOrderDetail === 'function') {
+    openOrderDetail(order);
+  }
+}
+
+function parseOrderDate(ts) {
+  if (!ts) return null;
+  // รูปแบบ "dd/MM/yyyy HH:mm:ss"
+  const m = String(ts).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return new Date(parseInt(m[3]), parseInt(m[2]) - 1, parseInt(m[1]));
+  // ISO
+  const d = new Date(ts);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function formatShortNum(n) {
+  n = Number(n) || 0;
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return String(n);
+}
+function formatNum(n) {
+  return (Number(n) || 0).toLocaleString();
+}
+
+// ============ 🆕 v7.5: Bulk Actions (Feature D) ============
+let bulkLongPressTimer = null;
+
+function enterBulkMode(initialOrderId) {
+  pwaState.bulkMode = true;
+  pwaState.bulkSelected = new Set();
+  if (initialOrderId) pwaState.bulkSelected.add(initialOrderId);
+  document.getElementById('bulkToolbar').classList.add('show');
+  document.querySelectorAll('.order-card').forEach(card => {
+    card.classList.add('bulk-mode');
+    const oid = card.dataset.orderId;
+    if (oid && pwaState.bulkSelected.has(oid)) card.classList.add('selected');
+  });
+  updateBulkCount();
+}
+
+function exitBulkMode() {
+  pwaState.bulkMode = false;
+  pwaState.bulkSelected.clear();
+  document.getElementById('bulkToolbar').classList.remove('show');
+  document.querySelectorAll('.order-card').forEach(card => {
+    card.classList.remove('bulk-mode', 'selected');
+  });
+}
+
+function toggleBulkSelect(orderId, cardEl) {
+  if (pwaState.bulkSelected.has(orderId)) {
+    pwaState.bulkSelected.delete(orderId);
+    cardEl.classList.remove('selected');
+  } else {
+    pwaState.bulkSelected.add(orderId);
+    cardEl.classList.add('selected');
+  }
+  updateBulkCount();
+  if (pwaState.bulkSelected.size === 0) exitBulkMode();
+}
+
+function updateBulkCount() {
+  const el = document.getElementById('bulkCount');
+  if (el) el.textContent = `เลือก ${pwaState.bulkSelected.size} รายการ`;
+}
+
+async function bulkAction(action) {
+  if (pwaState.bulkSelected.size === 0) return;
+
+  const ids = Array.from(pwaState.bulkSelected);
+
+  // 🆕 v7.7: ส่งแผนหลายออเดอร์พร้อมกัน
+  if (action === 'approve') {
+    const rows = [];
+    ids.forEach(oid => {
+      const o = allOrders.find(x => x.orderId === oid);
+      if (o) rows.push(o.row);
+    });
+    if (rows.length === 0) return;
+    if (!confirm(`📤 ส่งแผน ${rows.length} ออเดอร์ที่เลือก?\n\n(เฉพาะรายการที่ "ชำระเงินแล้ว" เท่านั้นที่จะถูกส่ง)`)) return;
+
+    const toast = showToast(`⏳ กำลังส่งแผน ${rows.length} ออเดอร์... อาจใช้เวลาสักครู่`, 'info');
+    try {
+      const r = await callApi('bulkApproveOrders', { rows: rows });
+      if (r.success) {
+        alert(`📦 ส่งแผนเสร็จ!\n✅ สำเร็จ ${r.successCount} ออเดอร์` +
+          (r.failCount > 0 ? `\n❌ ไม่สำเร็จ ${r.failCount} ออเดอร์ (ตรวจ Telegram)` : ''));
+      } else {
+        alert('❌ ' + (r.error || 'ส่งไม่สำเร็จ'));
+      }
+    } catch (e) {
+      alert('❌ Error: ' + e.message);
+    }
+    exitBulkMode();
+    loadOrders({ force: true });
+    return;
+  }
+
+  const confirmMsg = action === 'paid'
+    ? `เปลี่ยนสถานะ ${pwaState.bulkSelected.size} ออเดอร์เป็น "ชำระแล้ว"?`
+    : `ยกเลิก ${pwaState.bulkSelected.size} ออเดอร์?`;
+  if (!confirm(confirmMsg)) return;
+
+  let success = 0, failed = 0;
+  for (const orderId of ids) {
+    const order = allOrders.find(o => o.orderId === orderId);
+    if (!order) { failed++; continue; }
+    const newStatus = action === 'paid' ? 'ชำระเงินแล้ว' : 'ยกเลิก';
+    try {
+      const r = await callApi('updateStatus', { row: order.row, status: newStatus });
+      if (r.success) success++; else failed++;
+    } catch (e) { failed++; }
+  }
+  alert(`✅ สำเร็จ ${success} รายการ${failed > 0 ? ` • ❌ ล้มเหลว ${failed}` : ''}`);
+  exitBulkMode();
+  if (typeof loadOrders === 'function') loadOrders({ force: true });
+}
+
+// 🆕 v7.7: ส่งแผนทั้งหมดที่ "ชำระเงินแล้ว" (ปุ่มลัด ไม่ต้องเลือกทีละอัน)
+async function sendAllPaidOrders() {
+  // ใช้ข้อมูลจากแท็บที่กำลังเปิดอยู่ (tosend ใช้ _toSendOrders, orders ใช้ allOrders)
+  let paidOrders;
+  if (pwaState.currentTab === 'tosend') {
+    paidOrders = _toSendOrders.filter(o => o.status === 'ชำระเงินแล้ว');
+  } else {
+    paidOrders = allOrders.filter(o => o.status === 'ชำระเงินแล้ว');
+  }
+  if (paidOrders.length === 0) {
+    alert('ไม่มีออเดอร์ที่ "ชำระเงินแล้ว" รอส่ง');
+    return;
+  }
+  if (!confirm(`📤 ส่งแผนทั้งหมด ${paidOrders.length} ออเดอร์ที่ชำระเงินแล้ว?\n\nระบบจะส่งทีละออเดอร์อัตโนมัติ อาจใช้เวลา ${Math.ceil(paidOrders.length * 8 / 60)} นาที`)) return;
+
+  const rows = paidOrders.map(o => o.row);
+  showToast(`⏳ กำลังส่งแผน ${rows.length} ออเดอร์...`, 'info');
+
+  try {
+    const r = await callApi('bulkApproveOrders', { rows: rows });
+    if (r.success) {
+      alert(`📦 ส่งแผนเสร็จ!\n✅ สำเร็จ ${r.successCount} ออเดอร์` +
+        (r.failCount > 0 ? `\n❌ ไม่สำเร็จ ${r.failCount} ออเดอร์ — ดูรายละเอียดใน Telegram` : ''));
+    } else {
+      alert('❌ ' + (r.error || 'ส่งไม่สำเร็จ'));
+    }
+  } catch (e) {
+    alert('❌ Error: ' + e.message);
+  }
+  // รีเฟรชทั้ง 2 แท็บ
+  _toSendOrders = [];
+  loadToSend({ force: true });
+  loadOrders({ force: true });
+}
+
+// Long-press handler — เพิ่มทีหลังให้กับ order cards
+function attachBulkLongPress(card, orderId) {
+  if (!card || card._bulkAttached) return;
+  card._bulkAttached = true;
+  card.dataset.orderId = orderId;
+
+  let startX = 0, startY = 0, moved = false;
+
+  card.addEventListener('touchstart', (e) => {
+    if (pwaState.bulkMode) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    moved = false;
+    bulkLongPressTimer = setTimeout(() => {
+      if (!moved) {
+        if (navigator.vibrate) navigator.vibrate(40);
+        enterBulkMode(orderId);
+      }
+    }, 600);
+  }, { passive: true });
+
+  card.addEventListener('touchmove', (e) => {
+    const dx = Math.abs(e.touches[0].clientX - startX);
+    const dy = Math.abs(e.touches[0].clientY - startY);
+    if (dx > 10 || dy > 10) {
+      moved = true;
+      clearTimeout(bulkLongPressTimer);
+    }
+  }, { passive: true });
+
+  card.addEventListener('touchend', (e) => {
+    clearTimeout(bulkLongPressTimer);
+    if (pwaState.bulkMode) {
+      e.preventDefault();
+      toggleBulkSelect(orderId, card);
+    }
+  });
+
+  // สำหรับ desktop: ใช้ right-click เข้า bulk
+  card.addEventListener('contextmenu', (e) => {
+    if (pwaState.bulkMode) return;
+    e.preventDefault();
+    enterBulkMode(orderId);
+  });
+}
+
+// helper escapeHtml ถ้ายังไม่มี
+if (typeof escapeHtml === 'undefined') {
+  window.escapeHtml = function(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g,
+      c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  };
+}
+
+// ============ Init PWA features on load ============
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(pwaState.theme);
+  // sound toggle initial state
+  const sndToggle = document.getElementById('soundToggle');
+  if (sndToggle) sndToggle.classList.toggle('on', pwaState.soundEnabled);
+  // sound picker initial
+  const sndBtn = document.querySelector(`.sound-picker button[data-sound="${pwaState.soundType}"]`);
+  if (sndBtn) sndBtn.classList.add('active');
+});
+
+// ============ API ============
+// ============ 🆕 v7.5: Apps Script URL Configuration ============
+// ⚠️ สำคัญ: ใส่ URL ของ Apps Script Web App ที่ deploy แล้ว
+// ดูได้จาก Apps Script Editor → Deploy → Manage deployments → Web app URL
+// ตัวอย่าง: https://script.google.com/macros/s/AKfycb.../exec
+const GOOGLE_SCRIPT_URL = localStorage.getItem('kp_script_url') ||
+  'https://script.google.com/macros/s/AKfycbxQaNC6KDhCY5Jzw5M9XmbvWrLGCVRdjB-LdAV7mKovNYWE9OhMtRw6YvOLVI46Qxj1/exec';
+
+function callApi(action, data) {
+  return new Promise((resolve, reject) => {
+    // 🆕 v7.5: ตรวจสอบว่ายังอยู่ใน Apps Script HTML Service (มี google.script.run) หรือไม่
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      // โหมดเก่า: เปิดผ่าน script.google.com
+      const payload = Object.assign({ action: action, token: currentToken }, data || {});
+      google.script.run
+        .withSuccessHandler(result => {
+          try {
+            const parsed = (typeof result === 'string') ? JSON.parse(result) : result;
+            resolve(parsed);
+          } catch (e) {
+            resolve({ success: false, error: 'parse error: ' + (result || '').substring(0, 200) });
+          }
+        })
+        .withFailureHandler(err => reject(err))
+        .handleAdminActionFromHtml(payload);
+      return;
+    }
+
+    // 🆕 โหมดใหม่: เปิดผ่าน GitHub Pages → ใช้ fetch ไปที่ Apps Script Web App
+    if (!GOOGLE_SCRIPT_URL || !GOOGLE_SCRIPT_URL.startsWith('http')) {
+      resolve({ success: false, error: 'ยังไม่ได้ตั้งค่า Apps Script URL' });
+      return;
+    }
+
+    const payload = Object.assign({ action: action, token: currentToken }, data || {});
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(err => {
+        console.error('callApi fetch error:', err);
+        reject(err);
+      });
+  });
+}
+
+// ============ Login ============
+function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+
+  if (!username || !password) {
+    showLoginError('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
+    return;
+  }
+
+  errorEl.classList.add('hidden');
+  const btn = document.querySelector('.btn-primary');
+  btn.disabled = true; btn.textContent = 'กำลังเข้าสู่ระบบ...';
+
+  callApi('login', { username, password })
+    .then(res => {
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+      if (res.success) {
+        currentToken = res.token;
+        currentUser = res.username;
+        currentRole = res.role || 'owner';  // 🆕 บันทึก role
+        localStorage.setItem('admin_token', currentToken);
+        localStorage.setItem('admin_user', currentUser);
+        localStorage.setItem('admin_role', currentRole);  // 🆕 บันทึก role
+        showApp();
+      } else {
+        showLoginError(res.error || 'ไม่สามารถเข้าสู่ระบบ');
+      }
+    })
+    .catch(err => {
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+      showLoginError('เกิดข้อผิดพลาด: ' + err.message);
+    });
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function doLogout() {
+  if (!confirm('ออกจากระบบ?')) return;
+  currentToken = null;
+  currentUser = null;
+  currentRole = 'owner';  // 🆕 reset
+  localStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_user');
+  localStorage.removeItem('admin_role');  // 🆕
+  stopAutoRefresh();
+  showLogin();
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('appScreen').classList.add('hidden');
+  stopAutoRefresh();
+}
+
+function showApp() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('hidden');
+  document.getElementById('currentUser').textContent = currentUser;
+
+  // 🆕 ปรับ UI ตาม role
+  applyRoleMode();
+
+  // 🆕 v7.7: เริ่มที่หน้า "ต้องส่ง" + โหลดออเดอร์ background
+  switchTab('tosend');
+  loadOrders();  // โหลด cache ออเดอร์ไว้ background
+  startAutoRefresh();
+}
+
+// 🆕 ปรับ UI ตามสิทธิ์ของ user
+function applyRoleMode() {
+  const filterTabs = document.getElementById('filterTabs');
+  const miniDash = document.getElementById('miniDashboard');
+
+  if (currentRole === 'staff') {
+    filterTabs.classList.add('staff-mode');
+    // 🆕 ซ่อน Mini Dashboard สำหรับ staff (เห็นเฉพาะ owner)
+    if (miniDash) miniDash.style.display = 'none';
+    // ถ้า currentFilter คือ 'all' ให้เปลี่ยนเป็น 'pending'
+    if (currentFilter === 'all') {
+      currentFilter = 'pending';
+      // อัปเดต UI ให้ tab pending เป็น active
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      const pendingTab = document.querySelector('[data-filter="pending"]');
+      if (pendingTab) pendingTab.classList.add('active');
+    }
+    // เพิ่ม badge "วันนี้" ที่ tab ส่งแล้ว
+    const completedLabel = document.querySelector('[data-filter="completed"] .filter-tab-label');
+    if (completedLabel && !completedLabel.dataset.modified) {
+      completedLabel.textContent = 'ส่งแล้ว (วันนี้)';
+      completedLabel.dataset.modified = '1';
+    }
+  } else {
+    filterTabs.classList.remove('staff-mode');
+    // 🆕 แสดง Mini Dashboard สำหรับ owner
+    if (miniDash) miniDash.style.display = '';
+    // คืน label ปกติ
+    const completedLabel = document.querySelector('[data-filter="completed"] .filter-tab-label');
+    if (completedLabel) {
+      completedLabel.textContent = 'ส่งแล้ว';
+      delete completedLabel.dataset.modified;
+    }
+  }
+}
+
+// ============ Auto Refresh ============
+function startAutoRefresh() {
+  stopAutoRefresh(); // กัน duplicate
+  // 🆕 v7.7: รีเฟรชทุก 45 วินาที (เดิม 15 วิ — ถี่เกินทำให้แอปกระตุก)
+  autoRefreshInterval = setInterval(() => {
+    // ไม่ refresh ถ้า user ไม่ได้อยู่แท็บ orders (ประหยัด request)
+    if (pwaState.currentTab === 'orders') {
+      silentRefreshOrders();
+    }
+  }, 45000);
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+}
+
+// รีเฟรชแบบเงียบ - ไม่แสดง loading - อัปเดตเฉพาะถ้าข้อมูลเปลี่ยน
+function silentRefreshOrders() {
+  if (!currentToken) return;
+
+  callApi('listOrders', { filter: 'all' })
+    .then(res => {
+      if (!res.success) {
+        if (res.error === 'unauthorized') { doLogout(); }
+        return;
+      }
+      const newOrders = res.orders || [];
+      const newHash = computeOrdersHash(newOrders);
+      _lastLoadTime = Date.now();  // 🆕 v7.7: sync กับ cache timer
+
+      // 🆕 v7: อัปเดต miniStats ทุกครั้งแม้ไม่มี orders เปลี่ยน
+      if (res.miniStats) {
+        lastMiniStats = res.miniStats;
+        updateMiniDashboard();
+      }
+
+      if (newHash !== lastOrdersHash) {
+        lastOrdersHash = newHash;
+        allOrders = newOrders;
+        updateBadges();
+        renderOrders();
+
+        // ถ้าหน้ารายละเอียดเปิดอยู่ → รีเฟรช detail ด้วย
+        if (currentOrder) {
+          const updatedOrder = newOrders.find(o => o.row === currentOrder.row);
+          if (updatedOrder && updatedOrder.status !== currentOrder.status) {
+            // สถานะเปลี่ยน → reload detail
+            openDetail(currentOrder.row, true);
+          }
+        }
+      }
+    })
+    .catch(err => {
+      console.warn('Silent refresh failed:', err);
+    });
+}
+
+function computeOrdersHash(orders) {
+  // hash อย่างง่าย: รวม row+status+slipUrl
+  return orders.map(o => o.row + ':' + o.status + ':' + (o.slipUrl ? '1' : '0')).join('|');
+}
+
+// ============ Orders List ============
+let _lastLoadTime = 0;
+let _isLoadingOrders = false;
+
+function loadOrders(opts) {
+  opts = opts || {};
+  const listEl = document.getElementById('ordersList');
+
+  // 🆕 v7.7: กันโหลดซ้อน
+  if (_isLoadingOrders && !opts.force) return;
+
+  // 🆕 v7.7: ถ้ามี cache อยู่แล้วและเพิ่งโหลด < 30 วิ → ไม่โหลดใหม่ (เว้นแต่ force)
+  const now = Date.now();
+  if (!opts.force && allOrders.length > 0 && (now - _lastLoadTime) < 30000) {
+    renderOrders();
+    return;
+  }
+
+  // 🆕 v7.7: ถ้ามี cache → แสดงทันที (ไม่ขึ้น spinner เต็มจอ) แล้วค่อยอัปเดตเงียบๆ
+  if (allOrders.length > 0) {
+    renderOrders();
+  } else {
+    listEl.innerHTML = '<div class="loading"><div class="spinner"></div><div>กำลังโหลดคำสั่งซื้อ...</div></div>';
+  }
+
+  _isLoadingOrders = true;
+
+  callApi('listOrders', { filter: 'all' })
+    .then(res => {
+      _isLoadingOrders = false;
+      _lastLoadTime = Date.now();
+      if (!res.success) {
+        if (res.error === 'unauthorized') { doLogout(); return; }
+        if (allOrders.length === 0) {
+          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">⚠️</div><div>' + (res.error || 'โหลดข้อมูลไม่สำเร็จ') + '</div></div>';
+        }
+        return;
+      }
+      allOrders = res.orders || [];
+      if (res.miniStats) lastMiniStats = res.miniStats;  // 🆕 v7 (staff ไม่ส่งมา → คงค่าเดิม)
+      lastOrdersHash = computeOrdersHash(allOrders);
+      checkNewOrdersForSound(allOrders);
+      updateBadges();
+      renderOrders();
+      if (pwaState.currentTab === 'calendar') renderCalendar();
+    })
+    .catch(err => {
+      _isLoadingOrders = false;
+      if (allOrders.length === 0) {
+        listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">⚠️</div><div>ผิดพลาด: ' + err.message + '</div></div>';
+      }
+    });
+}
+
+function updateBadges() {
+  const counts = { pending: 0, paid: 0, completed: 0 };
+  allOrders.forEach(o => {
+    if (o.status === 'รอชำระเงิน') counts.pending++;
+    else if (o.status === 'ชำระเงินแล้ว') counts.paid++;
+    else if (o.status === 'ส่งแผนเสร็จสิ้น') counts.completed++;
+  });
+  document.getElementById('badge-pending').textContent = counts.pending;
+  document.getElementById('badge-paid').textContent = counts.paid;
+  document.getElementById('badge-completed').textContent = counts.completed;
+  const allBadge = document.getElementById('badge-all');
+  if (allBadge) allBadge.textContent = allOrders.length;
+
+  // 🆕 v7.5: Bottom nav badge (รอชำระ + ชำระแล้ว = ต้องดำเนินการ)
+  const navBadge = document.getElementById('navBadgeOrders');
+  if (navBadge) {
+    const actionableCount = counts.pending + counts.paid;
+    if (actionableCount > 0) {
+      navBadge.textContent = actionableCount > 99 ? '99+' : actionableCount;
+      navBadge.classList.remove('hidden');
+    } else {
+      navBadge.classList.add('hidden');
+    }
+  }
+
+  // 🆕 อัปเดต Mini Dashboard
+  updateMiniDashboard();
+}
+
+/**
+ * 🆕 อัปเดตการ์ด Mini Dashboard (ยอดวันนี้ + ยอดเดือนนี้)
+ * ใช้ค่าจาก backend (lastMiniStats) ที่คำนวณจากออเดอร์ทั้งหมด
+ */
+function updateMiniDashboard() {
+  if (!lastMiniStats) return;
+  const fmt = n => '฿' + Number(n || 0).toLocaleString();
+  const stToday = document.querySelector('#statToday .mini-stat-value');
+  const stTodaySub = document.querySelector('#statToday .mini-stat-sub');
+  const stMonth = document.querySelector('#statMonth .mini-stat-value');
+  const stMonthSub = document.querySelector('#statMonth .mini-stat-sub');
+  if (stToday) stToday.textContent = fmt(lastMiniStats.todayTotal);
+  if (stTodaySub) stTodaySub.textContent = (lastMiniStats.todayCount || 0) + ' ออเดอร์';
+  if (stMonth) stMonth.textContent = fmt(lastMiniStats.monthTotal);
+  if (stMonthSub) stMonthSub.textContent = (lastMiniStats.monthCount || 0) + ' ออเดอร์';
+}
+
+// 🆕 v7.7: ค้นหาออเดอร์
+let orderSearchQuery = '';
+let _searchDebounce = null;
+
+function onOrderSearch() {
+  const input = document.getElementById('orderSearchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
+  orderSearchQuery = input ? input.value : '';
+  if (clearBtn) clearBtn.style.display = orderSearchQuery ? 'block' : 'none';
+  // debounce 200ms กันกระตุก
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(renderOrders, 200);
+}
+
+function clearOrderSearch() {
+  const input = document.getElementById('orderSearchInput');
+  if (input) input.value = '';
+  orderSearchQuery = '';
+  document.getElementById('clearSearchBtn').style.display = 'none';
+  renderOrders();
+}
+
+function renderOrders() {
+  const listEl = document.getElementById('ordersList');
+
+  let filtered = allOrders;
+  if (currentFilter === 'pending') filtered = allOrders.filter(o => o.status === 'รอชำระเงิน');
+  else if (currentFilter === 'paid') filtered = allOrders.filter(o => o.status === 'ชำระเงินแล้ว');
+  else if (currentFilter === 'completed') filtered = allOrders.filter(o => o.status === 'ส่งแผนเสร็จสิ้น');
+
+  // 🆕 v7.7: กรองตามคำค้นหา (ชื่อลูกค้า / รหัสออเดอร์)
+  const q = (orderSearchQuery || '').trim().toLowerCase();
+  if (q) {
+    filtered = filtered.filter(o =>
+      String(o.orderId || '').toLowerCase().includes(q) ||
+      String(o.customerFb || '').toLowerCase().includes(q) ||
+      String(o.customerEmail || '').toLowerCase().includes(q)
+    );
+  }
+
+  // 🆕 v7.7: แสดงปุ่ม "ส่งแผนทั้งหมด" เฉพาะตอนกรอง "ชำระแล้ว" และมีรายการ (ซ่อนตอนค้นหา)
+  const sendAllBar = document.getElementById('bulkSendAllBar');
+  if (sendAllBar) {
+    const paidCount = allOrders.filter(o => o.status === 'ชำระเงินแล้ว').length;
+    if (currentFilter === 'paid' && paidCount > 0 && !q) {
+      sendAllBar.style.display = 'block';
+      const lbl = document.getElementById('paidCountLabel');
+      if (lbl) lbl.textContent = paidCount;
+    } else {
+      sendAllBar.style.display = 'none';
+    }
+  }
+
+  if (filtered.length === 0) {
+    const msg = q
+      ? `🔍 ไม่พบออเดอร์ที่ตรงกับ "${escapeHtml(q)}"`
+      : 'ไม่มีคำสั่งซื้อในหมวดนี้';
+    listEl.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">📭</div><div class="empty-state-text">' + msg + '</div></div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(o => {
+    const statusClass = getStatusClass(o.status);
+    const ts = formatDate(o.timestamp);
+    return `
+      <div class="order-card ${statusClass}" data-order-id="${escapeHtml(o.orderId)}" onclick="handleOrderCardClick(event, ${o.row}, '${escapeHtml(o.orderId)}')">
+        <div class="order-card-header">
+          <span class="order-card-id">${escapeHtml(o.orderId)}</span>
+          <span class="order-card-status ${statusClass}">${escapeHtml(o.status)}</span>
+        </div>
+        <div class="order-card-customer">${escapeHtml(o.customerFb || '-')}</div>
+        <div class="order-card-meta">
+          <span>${ts} • ${o.itemCount || 0} รายการ</span>
+          <span class="order-card-amount">฿${formatNumber(o.netTotal)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // 🆕 v7.5: Attach long-press handler for bulk mode
+  listEl.querySelectorAll('.order-card').forEach(card => {
+    const oid = card.dataset.orderId;
+    attachBulkLongPress(card, oid);
+    // restore bulk-mode state ถ้า user เปลี่ยน filter ระหว่าง bulk
+    if (pwaState.bulkMode) {
+      card.classList.add('bulk-mode');
+      if (pwaState.bulkSelected.has(oid)) card.classList.add('selected');
+    }
+  });
+}
+
+// 🆕 v7.5: handler ที่ตัดสินว่าจะเปิด detail หรือ bulk select
+function handleOrderCardClick(e, row, orderId) {
+  if (pwaState.bulkMode) {
+    e.stopPropagation();
+    const card = e.currentTarget;
+    toggleBulkSelect(orderId, card);
+    return;
+  }
+  openDetail(row);
+}
+
+function getStatusClass(status) {
+  const map = {
+    'รอชำระเงิน': 'pending',
+    'ชำระเงินแล้ว': 'paid',
+    'อนุมัติส่งแผน': 'approved',
+    'ส่งแผนเสร็จสิ้น': 'completed',
+    'ยกเลิก': 'cancelled'
+  };
+  return map[status] || 'pending';
+}
+
+// ============ Filter Tabs ============
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentFilter = tab.dataset.filter;
+    renderOrders();
+  });
+});
+
+// ============ Order Detail ============
+function openDetail(row, silent) {
+  const detailPage = document.getElementById('detailPage');
+  const body = document.getElementById('detailBody');
+  if (!silent) {
+    body.innerHTML = '<div class="loading"><div class="spinner"></div><div>กำลังโหลด...</div></div>';
+    detailPage.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  callApi('getOrderDetail', { row })
+    .then(res => {
+      if (!res.success) {
+        if (res.error === 'unauthorized') { doLogout(); return; }
+        if (!silent) body.innerHTML = '<div class="empty-state">โหลดข้อมูลไม่สำเร็จ</div>';
+        return;
+      }
+      currentOrder = res.order;
+      renderDetail(currentOrder);
+      if (silent) {
+        showToast('🔄 อัปเดตสถานะเป็น "' + res.order.status + '"', 'success');
+      }
+    });
+}
+
+function closeDetail() {
+  document.getElementById('detailPage').classList.remove('show');
+  document.body.style.overflow = '';
+  document.getElementById('detailActionBar').classList.remove('show');
+  document.getElementById('detailActionBar').innerHTML = '';
+  currentOrder = null;
+}
+
+function renderDetail(order) {
+  document.getElementById('detailTitle').textContent = order.orderId;
+
+  const ts = formatDate(order.timestamp);
+  const statusClass = getStatusClass(order.status);
+
+  // เลือก default ตามสถานะ + ความพร้อม
+  // 🆕 สำหรับ extras (VIP/Report) → enable ได้ถ้ามี message
+  // สำหรับวิชาเรียนปกติ → ต้องมี Drive link
+  const canApprove = order.subjects.length > 0 && order.subjects.some(s =>
+    (s.isExtra && s.hasMessage) || (!s.isExtra && s.hasLink)
+  );
+  const subjectsHtml = order.subjects.map((s, i) => {
+    const meta = [];
+    if (s.curriculum && s.curriculum !== '-') meta.push('หลักสูตร ' + s.curriculum);
+    if (s.hours) meta.push(s.hours + ' ชม.');
+    if (s.planCount) meta.push(s.planCount + ' แผน');
+
+    let status = '';
+    let canSelect = false;
+
+    if (s.isExtra) {
+      // กรณี Extra (VIP / Report)
+      if (s.hasMessage) {
+        status = '<div class="subject-status ok">✓ ข้อความพร้อมส่ง <span style="color:#9ca3af;">(ไม่ต้องใช้ Drive)</span></div>';
+        canSelect = true;
+      } else {
+        status = '<div class="subject-status warn">⚠ ยังไม่มีข้อความใน Sheet (กรอกคอลัมน์ G)</div>';
+        canSelect = false;
+      }
+    } else {
+      // กรณีวิชาเรียนปกติ
+      if (s.hasLink && s.hasMessage) {
+        status = '<div class="subject-status ok">✓ ลิงก์ + ข้อความครบ</div>';
+        canSelect = true;
+      } else if (s.hasLink) {
+        status = '<div class="subject-status warn">⚠ มีลิงก์ แต่ยังไม่มีข้อความ (ระบบใช้ template default)</div>';
+        canSelect = true;
+      } else {
+        status = '<div class="subject-status warn">⚠ ยังไม่มีลิงก์ Drive</div>';
+        canSelect = false;
+      }
+    }
+
+    const disabled = !canSelect ? 'disabled' : '';
+    const checked = canSelect ? 'selected' : '';
+
+    return `
+      <div class="subject-card ${checked} ${disabled}" data-idx="${i}" onclick="toggleSubject(${i})">
+        <div class="subject-checkbox">${canSelect ? '✓' : ''}</div>
+        <div class="subject-info">
+          <div class="subject-name">${escapeHtml(s.subject)}${s.grade && s.grade !== '-' ? ' ' + escapeHtml(s.grade) : ''}</div>
+          <div class="subject-meta">${meta.join(' • ')}</div>
+          ${status}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  let actionBar = '';
+  if (order.status === 'รอชำระเงิน') {
+    actionBar = `
+      <button class="btn-action btn-warning" onclick="openStatusModal()">📋 เปลี่ยนสถานะ</button>
+      <button class="btn-action btn-success" onclick="confirmApproval()" ${canApprove ? '' : 'disabled'}>✅ ส่งแผนทันที</button>
+    `;
+  } else if (order.status === 'ชำระเงินแล้ว') {
+    actionBar = `
+      <button class="btn-action btn-secondary" onclick="closeDetail()">ปิด</button>
+      <button class="btn-action btn-success" onclick="confirmApproval()" ${canApprove ? '' : 'disabled'}>✅ ส่งแผนทันที</button>
+    `;
+  } else {
+    actionBar = `
+      <button class="btn-action btn-secondary" onclick="closeDetail()">ปิด</button>
+      <button class="btn-action btn-warning" onclick="openStatusModal()">📋 เปลี่ยนสถานะ</button>
+    `;
+  }
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="info-card">
+      <div class="info-row">
+        <span class="info-label">สถานะ</span>
+        <span class="order-card-status ${statusClass}">${escapeHtml(order.status)}</span>
+      </div>
+      <div class="info-row"><span class="info-label">วันที่</span><span class="info-value">${ts}</span></div>
+      <div class="info-row"><span class="info-label">รหัส</span><span class="info-value">${escapeHtml(order.orderId)}</span></div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-row"><span class="info-label">📘 Facebook</span><span class="info-value">${escapeHtml(order.customerFb)}</span></div>
+      <div class="info-row"><span class="info-label">📧 Gmail</span><span class="info-value">${escapeHtml(order.customerEmail)}</span></div>
+    </div>
+
+    <div class="totals-box">
+      <div class="totals-row"><span>ราคารวม</span><span>${formatNumber(order.subtotal)} บาท</span></div>
+      ${order.discountPercentValue > 0 ? `<div class="totals-row discount"><span>ส่วนลด ${order.discountPercent}%</span><span>- ${formatNumber(order.discountPercentValue)} บาท</span></div>` : ''}
+      <div class="totals-divider"></div>
+      <div class="totals-net">
+        <span class="totals-net-label">ยอดสุทธิ</span>
+        <span class="totals-net-amount">฿${formatNumber(order.netTotal)}</span>
+      </div>
+    </div>
+
+    ${order.slipUrl ? `
+      <div class="section-title">💳 สลิปการโอนเงิน</div>
+      <div class="slip-viewer">
+        <img class="slip-img" src="${escapeHtml(order.slipPreviewUrl || order.slipUrl)}" alt="สลิป" onclick="openSlipFullscreen('${escapeHtml(order.slipUrl)}')" onerror="this.parentElement.innerHTML='<div class=\\'slip-error\\'>📎 <a href=&quot;${escapeHtml(order.slipUrl)}&quot; target=&quot;_blank&quot;>เปิดดูสลิปบน Google Drive</a></div>'">
+        <div class="slip-actions">
+          <a href="${escapeHtml(order.slipUrl)}" target="_blank" class="slip-action-btn">🔍 ดูเต็มจอ</a>
+        </div>
+      </div>
+    ` : (order.status === 'รอชำระเงิน' ? `
+      <div class="warning-box" style="margin-top:12px;">
+        ⏳ <strong>ลูกค้ายังไม่ได้อัปสลิป</strong> — รอลูกค้าอัปสลิปทางหน้าเว็บ หรือคุณตรวจจาก Messenger ด้วยตนเอง
+      </div>
+    ` : '')}
+
+    <div class="section-title">📦 รายการวิชา (${order.subjects.length} วิชา)</div>
+    ${order.subjects.length > 0 ? subjectsHtml : '<div class="info-card"><div class="info-label">ไม่มีรายการวิชา (อาจเป็น VIP เท่านั้น)</div></div>'}
+
+    <div class="warning-box">
+      ⚠️ <strong>ก่อนกด "ส่งแผนทันที":</strong> ตรวจสลิปการโอนเงินให้แน่ใจก่อนนะคะ — ระบบจะแชร์ Drive + ส่งเมลให้ลูกค้าทันที ไม่สามารถยกเลิกได้
+    </div>
+  `;
+
+  // Render action bar แยกต่างหาก (อยู่ติดล่างจอ)
+  const actionBarEl = document.getElementById('detailActionBar');
+  actionBarEl.innerHTML = actionBar;
+  actionBarEl.classList.add('show');
+}
+
+function toggleSubject(idx) {
+  const card = document.querySelector('.subject-card[data-idx="' + idx + '"]');
+  if (!card || card.classList.contains('disabled')) return;
+  card.classList.toggle('selected');
+  const cb = card.querySelector('.subject-checkbox');
+  cb.textContent = card.classList.contains('selected') ? '✓' : '';
+}
+
+function getSelectedSubjects() {
+  if (!currentOrder) return [];
+  return currentOrder.subjects.filter((s, i) => {
+    const card = document.querySelector('.subject-card[data-idx="' + i + '"]');
+    return card && card.classList.contains('selected') && !card.classList.contains('disabled');
+  });
+}
+
+// ============ Status Modal ============
+function openStatusModal() {
+  document.getElementById('statusModal').classList.add('show');
+}
+function closeStatusModal(e) {
+  if (e && e.target.id !== 'statusModal' && !e.target.classList.contains('cancel')) return;
+  document.getElementById('statusModal').classList.remove('show');
+}
+
+function updateStatus(newStatus) {
+  if (!currentOrder) return;
+  closeStatusModal();
+  showToast('กำลังอัปเดต...', '');
+
+  callApi('updateStatus', { row: currentOrder.row, status: newStatus })
+    .then(res => {
+      if (!res.success) {
+        if (res.error === 'unauthorized') { doLogout(); return; }
+        showToast('❌ ' + (res.error || 'ไม่สำเร็จ'), 'error');
+        return;
+      }
+      showToast('✅ อัปเดตเป็น "' + newStatus + '"', 'success');
+      setTimeout(() => {
+        closeDetail();
+        loadOrders();
+      }, 800);
+    });
+}
+
+// ============ Approval ============
+function confirmApproval() {
+  if (!currentOrder) return;
+  const selected = getSelectedSubjects();
+  if (selected.length === 0) {
+    showToast('กรุณาเลือกอย่างน้อย 1 วิชา', 'error');
+    return;
+  }
+  if (!confirm('ยืนยันส่งแผน ' + selected.length + ' วิชาให้ ' + currentOrder.customerEmail + '?')) return;
+
+  showToast('⏳ กำลังแชร์ Drive และส่งเมล...', '');
+  document.querySelectorAll('.btn-action').forEach(b => b.disabled = true);
+
+  callApi('approveOrder', {
+    row: currentOrder.row,
+    customerEmail: currentOrder.customerEmail,
+    customerFb: currentOrder.customerFb,
+    subjects: selected
+  }).then(res => {
+    if (!res.success) {
+      if (res.error === 'unauthorized') { doLogout(); return; }
+      showToast('❌ ' + (res.error || 'ไม่สำเร็จ'), 'error');
+      document.querySelectorAll('.btn-action').forEach(b => b.disabled = false);
+      return;
+    }
+    showApprovalResult(res.result);
+  }).catch(err => {
+    showToast('❌ ' + err.message, 'error');
+    document.querySelectorAll('.btn-action').forEach(b => b.disabled = false);
+  });
+}
+
+function showApprovalResult(result) {
+  const sharedHtml = result.shared.length > 0
+    ? '<div class="row ok">✅ แชร์สำเร็จ ' + result.shared.length + ' วิชา</div>'
+    : '';
+  const failedHtml = result.failed.length > 0
+    ? '<div class="row err">⚠️ ล้มเหลว ' + result.failed.length + ' วิชา</div>' +
+      result.failed.map(f => '<div class="row err" style="font-size:11px;">• ' + escapeHtml(f.subject) + ' ' + escapeHtml(f.grade) + ': ' + escapeHtml(f.reason) + '</div>').join('')
+    : '';
+  const emailHtml = result.emailSent
+    ? '<div class="row ok">✅ ส่งเมลให้ลูกค้าเรียบร้อย</div>'
+    : (result.emailError ? '<div class="row err">❌ ส่งเมลล้มเหลว</div>' : '');
+
+  const isSuccess = result.shared.length > 0 && result.emailSent;
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="result-screen">
+      <div class="result-icon">${isSuccess ? '🎉' : '⚠️'}</div>
+      <div class="result-title">${isSuccess ? 'ส่งแผนสำเร็จ!' : 'ส่งบางส่วน'}</div>
+      <div class="result-detail">
+        ${sharedHtml}
+        ${failedHtml}
+        ${emailHtml}
+      </div>
+    </div>
+  `;
+
+  const actionBarEl = document.getElementById('detailActionBar');
+  actionBarEl.innerHTML = `
+    <button class="btn-action btn-success" onclick="closeDetail(); loadOrders();" style="flex:1;">เสร็จสิ้น</button>
+  `;
+  actionBarEl.classList.add('show');
+}
+
+// ============ Toast ============
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ============ Slip Fullscreen ============
+function openSlipFullscreen(url) {
+  if (!url) return;
+  // ถ้าเป็น Drive URL ปกติ → แปลงเป็น preview URL
+  let imgUrl = url;
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) imgUrl = 'https://drive.google.com/uc?export=view&id=' + m[1];
+
+  document.getElementById('slipFullscreenImg').src = imgUrl;
+  document.getElementById('slipFullscreen').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSlipFullscreen() {
+  document.getElementById('slipFullscreen').classList.remove('show');
+  if (!document.getElementById('detailPage').classList.contains('show')) {
+    document.body.style.overflow = '';
+  }
+}
+
+// ============ Helpers ============
+function openSlipFullscreen(url) {
+  if (url) window.open(url, '_blank');
+}
+
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  return String(text)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function formatNumber(n) {
+  return Math.round(Number(n) || 0).toLocaleString('en-US');
+}
+function formatDate(dateStr) {
+  if (!dateStr) return '-';
+  // Sheet returns Date object → format as DD/MM HH:MM
+  try {
+    const d = (dateStr instanceof Date) ? dateStr : new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr).substring(0, 16);
+    const pad = (n) => String(n).padStart(2, '0');
+    return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + ' ' +
+      pad(d.getHours()) + ':' + pad(d.getMinutes());
+  } catch (e) {
+    return String(dateStr).substring(0, 16);
+  }
+}
+
+// ============ Init ============
+if (currentToken && currentUser) {
+  showApp();
+} else {
+  showLogin();
+}
+
+// Enter to login
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
