@@ -161,7 +161,7 @@ body {
 
 /* Tabs */
 .tabs {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
   padding: 8px;
   background: var(--bg-card);
   border-radius: 14px;
@@ -506,8 +506,7 @@ body {
   <div class="main">
     <div class="tabs">
       <button class="tab-btn active" data-tab="price" onclick="switchTab('price')">💰 ราคา</button>
-      <button class="tab-btn" data-tab="vip" onclick="switchTab('vip')">👑 VIP</button>
-      <button class="tab-btn" data-tab="systems" onclick="switchTab('systems')">💼 ระบบ</button>
+      <button class="tab-btn" data-tab="systems" onclick="switchTab('systems')">💼 ระบบงาน</button>
       <button class="tab-btn" data-tab="subjects" onclick="switchTab('subjects')">📚 วิชา</button>
     </div>
 
@@ -520,15 +519,19 @@ body {
           <div class="empty">⏳ กำลังโหลด...</div>
         </div>
       </div>
-    </div>
 
-    <!-- Tab: VIP -->
-    <div class="tab-panel" id="tab-vip">
+      <!-- 🆕 VIP Price (คงที่ทุกกลุ่ม) -->
       <div class="card">
-        <div class="card-title">👑 ราคา VIP กลุ่ม</div>
-        <div class="card-desc">ราคาเหมาแบบสมัครเป็นสมาชิก</div>
-        <div id="vipList">
-          <div class="empty">⏳ กำลังโหลด...</div>
+        <div class="card-title">👑 ราคา VIP (ทุกกลุ่ม)</div>
+        <div class="card-desc">ราคาคงที่สำหรับ VIP ทุกกลุ่ม (เพิ่มกลุ่มได้ในแท็บ "วิชา")</div>
+        <div class="price-row">
+          <div>
+            <div class="label">ราคา VIP ต่อกลุ่ม</div>
+            <div class="sub-label">ใช้กับทุก VIP ที่สร้างขึ้น</div>
+          </div>
+          <span style="font-size:13px; color:var(--text-muted);">฿</span>
+          <input type="number" class="price-input" id="vipPriceInput"
+            value="299" oninput="onVipPriceChange(this)" min="0">
         </div>
       </div>
     </div>
@@ -536,8 +539,16 @@ body {
     <!-- Tab: Systems -->
     <div class="tab-panel" id="tab-systems">
       <div class="card">
-        <div class="card-title">💼 ระบบงาน Offline</div>
-        <div class="card-desc">เปิด/ปิด และตั้งราคา ระบบงานแต่ละชนิด</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="flex:1;">
+            <div class="card-title" style="margin:0;">💼 ระบบงาน Offline</div>
+            <div class="card-desc" style="margin:2px 0 0;">เปิด/ปิด ตั้งราคา เพิ่ม/แก้/ลบ ได้</div>
+          </div>
+          <button onclick="openSystemModal('add')" style="
+            background:var(--color-primary); color:white; border:none;
+            border-radius:8px; padding:8px 14px; font-family:inherit;
+            font-size:13px; font-weight:600; cursor:pointer;">+ เพิ่ม</button>
+        </div>
         <div id="systemsList">
           <div class="empty">⏳ กำลังโหลด...</div>
         </div>
@@ -572,13 +583,14 @@ body {
   <div class="modal-content">
     <div class="modal-title" id="subjectModalTitle">เพิ่มวิชาใหม่</div>
     <div class="form-group">
-      <label class="form-label">ชั้นเรียน</label>
-      <select id="subjGrade" class="form-input">
+      <label class="form-label">ชั้นเรียน / VIP</label>
+      <select id="subjGrade" class="form-input" onchange="onGradeChange()">
         <option value="ป.1">ป.1</option><option value="ป.2">ป.2</option><option value="ป.3">ป.3</option>
         <option value="ป.4">ป.4</option><option value="ป.5">ป.5</option><option value="ป.6">ป.6</option>
+        <option value="VIP">👑 VIP (กลุ่ม)</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group" id="subjCurriculumGroup">
       <label class="form-label">หลักสูตร</label>
       <select id="subjCurriculum" class="form-input">
         <option value="68">หลักสูตร 2568</option>
@@ -586,10 +598,10 @@ body {
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">ชื่อวิชา</label>
+      <label class="form-label" id="subjNameLabel">ชื่อวิชา</label>
       <input type="text" id="subjName" class="form-input" placeholder="เช่น ภาษาไทย">
     </div>
-    <div class="form-group">
+    <div class="form-group" id="subjHoursGroup">
       <label class="form-label">จำนวนชั่วโมง</label>
       <input type="number" id="subjHours" class="form-input" placeholder="เช่น 80" min="0">
     </div>
@@ -601,13 +613,41 @@ body {
   </div>
 </div>
 
+<!-- System Modal -->
+<div class="modal-overlay" id="systemModal">
+  <div class="modal-content">
+    <div class="modal-title" id="systemModalTitle">เพิ่มระบบงานใหม่</div>
+    <div class="form-group">
+      <label class="form-label">ไอคอน (Emoji)</label>
+      <input type="text" id="sysIcon" class="form-input" placeholder="📊" maxlength="4" style="font-size:24px; text-align:center;">
+    </div>
+    <div class="form-group">
+      <label class="form-label">ชื่อระบบ</label>
+      <input type="text" id="sysName" class="form-input" placeholder="เช่น ระบบเช็คชื่อ">
+    </div>
+    <div class="form-group">
+      <label class="form-label">คำอธิบาย</label>
+      <input type="text" id="sysDesc" class="form-input" placeholder="เช่น เช็คชื่อนักเรียนรายวัน">
+    </div>
+    <div class="form-group">
+      <label class="form-label">ราคา (บาท)</label>
+      <input type="number" id="sysPriceModal" class="form-input" placeholder="99" min="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel-modal" onclick="closeSystemModal()">ยกเลิก</button>
+      <button class="btn-del-modal" id="sysDelBtn" onclick="deleteSystem()" style="display:none;">ลบ</button>
+      <button class="btn-ok-modal" onclick="saveSystem()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <script>
 // ============ Configuration ============
 const GOOGLE_SCRIPT_URL = localStorage.getItem('kp_script_url') ||
-  'https://script.google.com/macros/s/AKfycbxQaNC6KDhCY5Jzw5M9XmbvWrLGCVRdjB-LdAV7mKovNYWE9OhMtRw6YvOLVI46Qxj1/exec';
+  'https://script.google.com/macros/s/AKfycbzgW0XzuBDo0Mz6qOyfGS1JDsAqsLxJVTS-HFmsWluzy2Lpd8M6puOi1-hgoKwRVmZc/exec';
 
 // ============ State ============
 let currentToken = localStorage.getItem('admin_token') || null;
@@ -617,13 +657,14 @@ let currentRole = localStorage.getItem('admin_role') || 'owner';
 // Product data
 let productData = {
   priceTable: {},
-  vipPrices: {},
+  vipPrice: 299,
   offlineSystems: [],
   subjects: {}
 };
 let originalData = null;  // สำเนาเดิม (ไว้เทียบหา changes)
 let editingSubject = null;  // {grade, curriculum, oldSubject, oldHours} เมื่อกำลังแก้
-let subjFilterKey = '';  // p1_68, p2_68, ...
+let editingSystemIdx = null;  // index ของระบบงานที่กำลังแก้ (null = เพิ่มใหม่)
+let subjFilterKey = '';  // p1_68, p2_68, vip ...
 
 let pwaState = {
   installPromptEvent: null,
@@ -761,7 +802,7 @@ async function loadAllData() {
     }
     productData = {
       priceTable: res.priceTable || {},
-      vipPrices: res.vipPrices || {},
+      vipPrice: res.vipPrice != null ? res.vipPrice : 299,
       offlineSystems: res.offlineSystems || [],
       subjects: res.subjects || {}
     };
@@ -774,9 +815,11 @@ async function loadAllData() {
 
 function renderAll() {
   renderPriceTable();
-  renderVIP();
   renderSystems();
   renderSubjects();
+  // VIP price ใน Price tab
+  const vipInput = document.getElementById('vipPriceInput');
+  if (vipInput) vipInput.value = productData.vipPrice;
   updateChangeCount();
 }
 
@@ -809,30 +852,10 @@ function onPriceChange(input, hrs) {
   updateChangeCount();
 }
 
-// ============ Render: VIP ============
-function renderVIP() {
-  const el = document.getElementById('vipList');
-  const vipItems = [
-    { key: 'vip_13', label: '👑 VIP กลุ่ม ป.1-3', desc: 'รวมแผนทุกวิชา ป.1-3' },
-    { key: 'vip_46', label: '👑 VIP กลุ่ม ป.4-6', desc: 'รวมแผนทุกวิชา ป.4-6' }
-  ];
-  el.innerHTML = vipItems.map(v => `
-    <div class="price-row">
-      <div>
-        <div class="label">${v.label}</div>
-        <div class="sub-label">${v.desc}</div>
-      </div>
-      <span style="font-size:13px; color:var(--text-muted);">฿</span>
-      <input type="number" class="price-input" data-vip="${v.key}"
-        value="${productData.vipPrices[v.key] || 0}" oninput="onVipChange(this, '${v.key}')" min="0">
-    </div>
-  `).join('');
-}
-
-function onVipChange(input, key) {
+function onVipPriceChange(input) {
   const newVal = Number(input.value) || 0;
-  productData.vipPrices[key] = newVal;
-  const isChanged = (originalData.vipPrices[key] || 0) !== newVal;
+  productData.vipPrice = newVal;
+  const isChanged = (originalData.vipPrice || 0) !== newVal;
   input.classList.toggle('changed', isChanged);
   updateChangeCount();
 }
@@ -841,7 +864,7 @@ function onVipChange(input, key) {
 function renderSystems() {
   const el = document.getElementById('systemsList');
   if (!productData.offlineSystems || productData.offlineSystems.length === 0) {
-    el.innerHTML = '<div class="empty">📭 ไม่มีข้อมูล</div>';
+    el.innerHTML = '<div class="empty">📭 ยังไม่มีระบบงาน<br><span style="font-size:11px;">กดปุ่ม "+ เพิ่ม" ด้านบน</span></div>';
     return;
   }
   el.innerHTML = productData.offlineSystems.map((s, i) => `
@@ -855,6 +878,16 @@ function renderSystems() {
       <input type="number" class="sys-price" data-sys-idx="${i}"
         value="${s.price}" oninput="onSysPriceChange(this, ${i})" min="0">
       <button class="sys-toggle ${s.enabled !== false ? 'on' : ''}" onclick="toggleSys(${i})"></button>
+    </div>
+    <div style="display:flex; gap:6px; margin: -6px 0 10px 50px;">
+      <button onclick="openSystemModal('edit', ${i})" style="
+        background:var(--bg-elevated); color:var(--text-primary); border:none;
+        border-radius:6px; padding:4px 10px; font-family:inherit;
+        font-size:11px; cursor:pointer;">✏️ แก้ไข</button>
+      <button onclick="confirmDeleteSystem(${i})" style="
+        background:var(--bg-elevated); color:var(--color-danger); border:none;
+        border-radius:6px; padding:4px 10px; font-family:inherit;
+        font-size:11px; cursor:pointer;">🗑️ ลบ</button>
     </div>
   `).join('');
 }
@@ -878,39 +911,134 @@ function toggleSys(idx) {
   updateChangeCount();
 }
 
+// 🆕 v7.7: System Modal
+function openSystemModal(mode, idx) {
+  document.getElementById('sysDelBtn').style.display = 'none';
+  if (mode === 'edit' && idx != null) {
+    const s = productData.offlineSystems[idx];
+    document.getElementById('systemModalTitle').textContent = 'แก้ไขระบบงาน';
+    document.getElementById('sysIcon').value = s.icon || '';
+    document.getElementById('sysName').value = s.name || '';
+    document.getElementById('sysDesc').value = s.desc || '';
+    document.getElementById('sysPriceModal').value = s.price || 0;
+    editingSystemIdx = idx;
+    document.getElementById('sysDelBtn').style.display = 'block';
+  } else {
+    document.getElementById('systemModalTitle').textContent = 'เพิ่มระบบงานใหม่';
+    document.getElementById('sysIcon').value = '';
+    document.getElementById('sysName').value = '';
+    document.getElementById('sysDesc').value = '';
+    document.getElementById('sysPriceModal').value = '99';
+    editingSystemIdx = null;
+  }
+  document.getElementById('systemModal').classList.add('show');
+}
+
+function closeSystemModal() {
+  document.getElementById('systemModal').classList.remove('show');
+}
+
+function saveSystem() {
+  const icon = document.getElementById('sysIcon').value.trim() || '💼';
+  const name = document.getElementById('sysName').value.trim();
+  const desc = document.getElementById('sysDesc').value.trim();
+  const price = Number(document.getElementById('sysPriceModal').value) || 0;
+
+  if (!name) {
+    showToast('กรุณากรอกชื่อระบบ', 'error');
+    return;
+  }
+
+  if (editingSystemIdx != null) {
+    // แก้ไข
+    const s = productData.offlineSystems[editingSystemIdx];
+    s.icon = icon; s.name = name; s.desc = desc; s.price = price;
+  } else {
+    // เพิ่มใหม่ — สร้าง id อัตโนมัติ
+    const newId = 'sys_' + Date.now().toString(36);
+    productData.offlineSystems.push({
+      id: newId, icon: icon, name: name, desc: desc, price: price, enabled: true
+    });
+  }
+  closeSystemModal();
+  renderSystems();
+  updateChangeCount();
+  showToast(editingSystemIdx != null ? 'แก้ไขเรียบร้อย — กด "บันทึก" เพื่อยืนยัน' : 'เพิ่มเรียบร้อย — กด "บันทึก" เพื่อยืนยัน', 'success');
+}
+
+function deleteSystem() {
+  if (editingSystemIdx == null) return;
+  if (!confirm('ลบระบบงานนี้?')) return;
+  productData.offlineSystems.splice(editingSystemIdx, 1);
+  closeSystemModal();
+  renderSystems();
+  updateChangeCount();
+  showToast('ลบเรียบร้อย — กด "บันทึก" เพื่อยืนยัน', 'success');
+}
+
+function confirmDeleteSystem(idx) {
+  const s = productData.offlineSystems[idx];
+  if (!confirm(`ลบระบบ "${s.name}"?`)) return;
+  productData.offlineSystems.splice(idx, 1);
+  renderSystems();
+  updateChangeCount();
+  showToast('ลบเรียบร้อย — กด "บันทึก" เพื่อยืนยัน', 'success');
+}
+
 // ============ Render: Subjects ============
 function renderSubjects() {
   const filterEl = document.getElementById('subjFilter');
   const listEl = document.getElementById('subjectsList');
 
-  // สร้าง filter buttons จาก keys ที่มีจริง
-  const keys = Object.keys(productData.subjects).sort();
+  // สร้าง filter buttons จาก keys ที่มีจริง + ใส่ VIP ท้ายสุดถ้ามี
+  let keys = Object.keys(productData.subjects);
+  const hasVip = keys.indexOf('vip') !== -1;
+  keys = keys.filter(k => k !== 'vip').sort();
+  if (hasVip) keys.push('vip');
+
   if (!subjFilterKey && keys.length > 0) subjFilterKey = keys[0];
 
   filterEl.innerHTML = keys.map(k => {
-    const [grade, curr] = k.split('_');
-    const gradeNum = grade.replace('p', 'ป.');
+    let label;
+    if (k === 'vip') {
+      label = '👑 VIP';
+    } else {
+      const [grade, curr] = k.split('_');
+      const gradeNum = grade.replace('p', 'ป.');
+      label = `${gradeNum} (${curr})`;
+    }
     return `<button class="subj-filter-btn ${k === subjFilterKey ? 'active' : ''}"
-      onclick="setSubjFilter('${k}')">${gradeNum} (${curr})</button>`;
+      onclick="setSubjFilter('${k}')">${label}</button>`;
   }).join('');
 
   const list = productData.subjects[subjFilterKey] || [];
+  const isVip = subjFilterKey === 'vip';
+
   if (list.length === 0) {
-    listEl.innerHTML = '<div class="empty">📭 ไม่มีวิชาในชั้น/หลักสูตรนี้<br><span style="font-size:11px;">กดปุ่ม + มุมขวาเพื่อเพิ่ม</span></div>';
+    const msg = isVip
+      ? '📭 ยังไม่มีกลุ่ม VIP<br><span style="font-size:11px;">กดปุ่ม + มุมขวาเพื่อเพิ่ม</span>'
+      : '📭 ไม่มีวิชาในชั้น/หลักสูตรนี้<br><span style="font-size:11px;">กดปุ่ม + มุมขวาเพื่อเพิ่ม</span>';
+    listEl.innerHTML = '<div class="empty">' + msg + '</div>';
     return;
   }
-  // เรียงตามชื่อวิชา
+  // เรียงตามชื่อ
   const sorted = [...list].sort((a, b) => a.subject.localeCompare(b.subject, 'th'));
-  listEl.innerHTML = sorted.map(s => `
-    <div class="subj-row">
-      <div class="subj-name">📖 ${escapeHtml(s.subject)}</div>
-      <div class="subj-hours">${s.hours} ชม.</div>
-      <div class="subj-actions">
-        <button class="btn-edit" onclick="openSubjectModal('edit', '${escapeHtml(s.subject)}', ${s.hours})" title="แก้ไข">✏️</button>
-        <button class="btn-del" onclick="confirmDeleteSubject('${escapeHtml(s.subject)}', ${s.hours})" title="ลบ">🗑️</button>
+  listEl.innerHTML = sorted.map(s => {
+    const hoursLabel = isVip
+      ? `<div class="subj-hours" style="background:#fef3c7; color:#b45309;">💰 ${productData.vipPrice} ฿</div>`
+      : `<div class="subj-hours">${s.hours} ชม.</div>`;
+    const icon = isVip ? '👑' : '📖';
+    return `
+      <div class="subj-row">
+        <div class="subj-name">${icon} ${escapeHtml(s.subject)}</div>
+        ${hoursLabel}
+        <div class="subj-actions">
+          <button class="btn-edit" onclick="openSubjectModal('edit', '${escapeHtml(s.subject)}', ${s.hours}, '${escapeHtml(s.grade || '')}', '${escapeHtml(s.curriculum || '')}')" title="แก้ไข">✏️</button>
+          <button class="btn-del" onclick="confirmDeleteSubject('${escapeHtml(s.subject)}', ${s.hours}, '${escapeHtml(s.grade || '')}', '${escapeHtml(s.curriculum || '')}')" title="ลบ">🗑️</button>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function setSubjFilter(key) {
@@ -918,23 +1046,62 @@ function setSubjFilter(key) {
   renderSubjects();
 }
 
-// ============ Subject Modal ============
-function openSubjectModal(mode, subjectName, hours) {
-  const [grade, curr] = (subjFilterKey || 'p1_68').split('_');
-  const gradeStr = grade.replace('p', 'ป.');
+// 🆕 v7.7: ซ่อน/แสดง หลักสูตร + ชม. ตาม grade
+function onGradeChange() {
+  const grade = document.getElementById('subjGrade').value;
+  const isVip = grade === 'VIP';
+  document.getElementById('subjCurriculumGroup').style.display = isVip ? 'none' : 'block';
+  document.getElementById('subjHoursGroup').style.display = isVip ? 'none' : 'block';
+  document.getElementById('subjNameLabel').textContent = isVip ? 'ชื่อกลุ่ม VIP' : 'ชื่อวิชา';
+  document.getElementById('subjName').placeholder = isVip
+    ? 'เช่น กลุ่ม ป.1-3, กลุ่มภาษา ฯลฯ'
+    : 'เช่น ภาษาไทย';
+}
 
-  document.getElementById('subjGrade').value = gradeStr;
-  document.getElementById('subjCurriculum').value = curr;
+// ============ Subject Modal ============
+function openSubjectModal(mode, subjectName, hours, originalGrade, originalCurriculum) {
+  let initialGrade, initialCurr;
+
+  if (mode === 'edit') {
+    initialGrade = originalGrade || (subjFilterKey === 'vip' ? 'VIP' : '');
+    initialCurr = originalCurriculum || '';
+    if (!initialGrade && subjFilterKey !== 'vip') {
+      const [grade, curr] = subjFilterKey.split('_');
+      initialGrade = grade.replace('p', 'ป.');
+      initialCurr = curr;
+    }
+  } else {
+    // add — ใช้ filter ปัจจุบัน
+    if (subjFilterKey === 'vip') {
+      initialGrade = 'VIP';
+      initialCurr = '-';
+    } else {
+      const [grade, curr] = (subjFilterKey || 'p1_68').split('_');
+      initialGrade = grade.replace('p', 'ป.');
+      initialCurr = curr;
+    }
+  }
+
+  document.getElementById('subjGrade').value = initialGrade;
+  document.getElementById('subjCurriculum').value = initialCurr === '-' ? '68' : initialCurr;
+  onGradeChange();  // ซ่อน/แสดง field ตาม VIP
   document.getElementById('subjDelBtn').style.display = 'none';
 
   if (mode === 'edit') {
-    document.getElementById('subjectModalTitle').textContent = 'แก้ไขวิชา';
+    document.getElementById('subjectModalTitle').textContent =
+      initialGrade === 'VIP' ? 'แก้ไขกลุ่ม VIP' : 'แก้ไขวิชา';
     document.getElementById('subjName').value = subjectName;
     document.getElementById('subjHours').value = hours;
-    editingSubject = { grade: gradeStr, curriculum: curr, oldSubject: subjectName, oldHours: hours };
+    editingSubject = {
+      grade: initialGrade,
+      curriculum: initialCurr,
+      oldSubject: subjectName,
+      oldHours: hours
+    };
     document.getElementById('subjDelBtn').style.display = 'block';
   } else {
-    document.getElementById('subjectModalTitle').textContent = 'เพิ่มวิชาใหม่';
+    document.getElementById('subjectModalTitle').textContent =
+      initialGrade === 'VIP' ? 'เพิ่มกลุ่ม VIP ใหม่' : 'เพิ่มวิชาใหม่';
     document.getElementById('subjName').value = '';
     document.getElementById('subjHours').value = '';
     editingSubject = null;
@@ -948,12 +1115,17 @@ function closeSubjectModal() {
 
 async function saveSubject() {
   const grade = document.getElementById('subjGrade').value.trim();
-  const curr = document.getElementById('subjCurriculum').value.trim();
+  const isVip = grade === 'VIP';
+  const curr = isVip ? '-' : document.getElementById('subjCurriculum').value.trim();
   const subject = document.getElementById('subjName').value.trim();
-  const hours = Number(document.getElementById('subjHours').value) || 0;
+  const hours = isVip ? 0 : (Number(document.getElementById('subjHours').value) || 0);
 
-  if (!subject || hours <= 0) {
-    showToast('กรุณากรอกชื่อวิชาและจำนวนชั่วโมง', 'error');
+  if (!subject) {
+    showToast('กรุณากรอกชื่อ', 'error');
+    return;
+  }
+  if (!isVip && hours <= 0) {
+    showToast('กรุณากรอกจำนวนชั่วโมง', 'error');
     return;
   }
 
@@ -971,20 +1143,9 @@ async function saveSubject() {
     if (res.success) {
       showToast(res.message || 'บันทึกเรียบร้อย', 'success');
       closeSubjectModal();
-      // อัปเดต local data
-      const newKey = 'p' + grade.replace('ป.', '') + '_' + curr;
-      if (!productData.subjects[newKey]) productData.subjects[newKey] = [];
-
-      if (isEdit) {
-        const oldKey = 'p' + editingSubject.grade.replace('ป.', '') + '_' + editingSubject.curriculum;
-        if (productData.subjects[oldKey]) {
-          productData.subjects[oldKey] = productData.subjects[oldKey].filter(
-            x => !(x.subject === editingSubject.oldSubject && x.hours === editingSubject.oldHours)
-          );
-        }
-      }
-      productData.subjects[newKey].push({ subject, hours });
-      originalData.subjects = JSON.parse(JSON.stringify(productData.subjects));
+      // โหลดข้อมูลใหม่ทั้งหมด (เพราะ key อาจเปลี่ยน)
+      const newKey = isVip ? 'vip' : ('p' + grade.replace('ป.', '') + '_' + curr);
+      await loadAllData();
       subjFilterKey = newKey;
       renderSubjects();
     } else {
@@ -995,21 +1156,21 @@ async function saveSubject() {
   }
 }
 
-function confirmDeleteSubject(subject, hours) {
-  if (!confirm(`ลบวิชา "${subject}" (${hours} ชม.)?`)) return;
-  const [grade, curr] = subjFilterKey.split('_');
-  const gradeStr = grade.replace('p', 'ป.');
+function confirmDeleteSubject(subject, hours, grade, curriculum) {
+  const isVip = grade === 'VIP';
+  const msg = isVip ? `ลบกลุ่ม VIP "${subject}"?` : `ลบวิชา "${subject}" (${hours} ชม.)?`;
+  if (!confirm(msg)) return;
+
+  const useGrade = grade || (subjFilterKey === 'vip' ? 'VIP' : '');
+  const useCurr = curriculum || (subjFilterKey === 'vip' ? '-' : '');
+
   callApi('subjectOperation', {
-    op: 'delete', grade: gradeStr, curriculum: curr,
+    op: 'delete', grade: useGrade, curriculum: useCurr,
     subject, hours, oldSubject: subject, oldHours: hours
   }).then(res => {
     if (res.success) {
-      showToast('ลบวิชาเรียบร้อย', 'success');
-      productData.subjects[subjFilterKey] = (productData.subjects[subjFilterKey] || []).filter(
-        x => !(x.subject === subject && x.hours === hours)
-      );
-      originalData.subjects = JSON.parse(JSON.stringify(productData.subjects));
-      renderSubjects();
+      showToast('ลบเรียบร้อย', 'success');
+      loadAllData();
     } else {
       showToast('❌ ' + (res.error || ''), 'error');
     }
@@ -1019,7 +1180,12 @@ function confirmDeleteSubject(subject, hours) {
 function deleteSubject() {
   if (!editingSubject) return;
   closeSubjectModal();
-  confirmDeleteSubject(editingSubject.oldSubject, editingSubject.oldHours);
+  confirmDeleteSubject(
+    editingSubject.oldSubject,
+    editingSubject.oldHours,
+    editingSubject.grade,
+    editingSubject.curriculum
+  );
 }
 
 // ============ Change tracking + Save ============
@@ -1030,16 +1196,21 @@ function countChanges() {
   Object.keys(productData.priceTable).forEach(k => {
     if (productData.priceTable[k] !== originalData.priceTable[k]) count++;
   });
-  // vipPrices
-  Object.keys(productData.vipPrices).forEach(k => {
-    if ((productData.vipPrices[k] || 0) !== (originalData.vipPrices[k] || 0)) count++;
-  });
-  // offlineSystems
-  productData.offlineSystems.forEach((s, i) => {
-    const o = originalData.offlineSystems[i];
-    if (!o) return;
-    if (o.price !== s.price || (o.enabled !== false) !== (s.enabled !== false)) count++;
-  });
+  // vipPrice
+  if ((productData.vipPrice || 0) !== (originalData.vipPrice || 0)) count++;
+  // offlineSystems — เทียบทั้งความยาว + แต่ละ field
+  if (productData.offlineSystems.length !== originalData.offlineSystems.length) {
+    count += Math.abs(productData.offlineSystems.length - originalData.offlineSystems.length);
+  }
+  const minLen = Math.min(productData.offlineSystems.length, originalData.offlineSystems.length);
+  for (let i = 0; i < minLen; i++) {
+    const a = productData.offlineSystems[i];
+    const b = originalData.offlineSystems[i];
+    if (a.name !== b.name || a.icon !== b.icon || a.desc !== b.desc ||
+        a.price !== b.price || (a.enabled !== false) !== (b.enabled !== false)) {
+      count++;
+    }
+  }
   return count;
 }
 
@@ -1064,7 +1235,7 @@ async function saveAll() {
   try {
     const res = await callApi('saveProductSettings', {
       priceTable: productData.priceTable,
-      vipPrices: productData.vipPrices,
+      vipPrice: productData.vipPrice,
       offlineSystems: productData.offlineSystems
     });
     if (res.success) {
